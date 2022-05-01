@@ -1,0 +1,35 @@
+{
+  "name": "ca3-cinema2",
+  "version": "1.0.0",
+  "main": "src/worker/index.mjs",
+  "author": "Dara Dermody <dara@getshogun.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack --mode production",
+    "start": "wrangler dev",
+    "deploy": "wrangler publish"
+  },
+  "dependencies": {
+    "@cloudflare/kv-asset-handler": "^0.2.0",
+    "@types/react": "^18.0.5",
+    "@types/react-dom": "^18.0.1",
+    "axios": "^0.27.2",
+    "pleasejs": "^0.4.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.8.0",
+    "@types/pleasejs": "^0.0.30",
+    "concurrently": "^7.1.0",
+    "copy-webpack-plugin": "^10.2.4",
+    "file-loader": "^6.2.0",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.3",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1"
+  },
+  "packageManager": "yarn@3.2.0"
+}

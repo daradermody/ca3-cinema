@@ -1,0 +1,15 @@
+{
+  "name": "ca3-cinema2",
+  "version": "1.0.0",
+  "main": "../../build/worker/index.mjs",
+  "author": "Dara Dermody <dara@getshogun.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@cloudflare/kv-asset-handler": "^0.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.8.0",
+    "typescript": "^4.6.3"
+  },
+  "packageManager": "yarn@3.2.0"
+}

@@ -1,0 +1,23 @@
+account_id = "7df0aab9fca982de722652afa48c7cc1"
+name = "ca3-cinema"
+type = "javascript"
+workers_dev = true
+compatibility_date = "2022-04-30"
+kv_namespaces = [
+  { binding = "DATA", preview_id = "7d62809d1c8e4eb3b08383ffffc2a8ac", id = "6f5305beb441452fae34e16bcb657584" }
+]
+
+[build]
+command = "yarn build"
+
+[build.upload]
+format = "service-worker"
+#dir = "build"
+#main = "worker/index.mjs"
+
+#[durable_objects]
+#bindings = [{name = "DB", class_name = "Database"}]
+
+[site]
+bucket = "./build/site"
+entry-point = "src/worker"

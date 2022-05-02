@@ -3,6 +3,10 @@ import { render } from 'react-dom'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Landing from './pages/Landing'
 import MovieList from './pages/MovieList'
+import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import awsconfig from '../aws-exports';
+
+Amplify.configure(awsconfig);
 
 render(
   <BrowserRouter>

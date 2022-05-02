@@ -10,9 +10,11 @@
     "deploy": "wrangler publish"
   },
   "dependencies": {
+    "@aws-amplify/datastore": "^3.10.0",
     "@cloudflare/kv-asset-handler": "^0.2.0",
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.1",
+    "aws-amplify": "^4.3.20",
     "axios": "^0.27.2",
     "pleasejs": "^0.4.2",
     "react": "^16.9.0",

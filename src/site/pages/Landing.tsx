@@ -1,8 +1,11 @@
+import * as React from 'react'
 import { useEffect, useState } from 'react'
 // @ts-ignore
 import * as Please from 'pleasejs'
-import * as React from 'react'
+import { API, graphqlOperation } from 'aws-amplify';
+import { listTodos } from './graphql/queries';
 import logo from '../assets/logo.png'
+
 
 export default function Landing() {
   const [colour, setColour] = useState(Please.make_color())
@@ -10,6 +13,14 @@ export default function Landing() {
     const interval = setInterval(() => setColour(Please.make_color()), 2000)
     return () => clearInterval(interval)
   }, [setColour])
+
+  useEffect(() => {
+    async function getMovies() {
+      const movies = await API.graphql(graphqlOperation(listTodos));
+      console.log(movies)
+    }
+    void getMovies()
+  })
 
   return (
     <div style={{

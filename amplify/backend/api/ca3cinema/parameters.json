@@ -1,0 +1,5 @@
+{
+  "AppSyncApiName": "ca3cinema",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false
+}

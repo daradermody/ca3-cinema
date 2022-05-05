@@ -1,10 +1,8 @@
 const path = require('path')
 const CopyPlugin = require('copy-webpack-plugin')
-const webpack = require('webpack')
 
 module.exports = [
   {
-    name: 'site',
     entry: './src/site/index.tsx',
     module: {
       rules: [
@@ -26,7 +24,7 @@ module.exports = [
       extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-      path: path.resolve(__dirname, 'build/site/assets'),
+      path: path.resolve(__dirname, 'build'),
       filename: 'index.js',
     },
     cache: {
@@ -35,41 +33,18 @@ module.exports = [
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: 'src/site/index.html', to: '..' },
+          { from: 'src/site/index.html', to: '.' },
         ],
       }),
     ],
     performance: {
       hints: false,
     },
-  },
-  {
-    name: 'worker',
-    entry: './src/worker/index.ts',
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          use: 'ts-loader',
-          exclude: /node_modules/,
-        },
-      ],
-    },
-    resolve: {
-      extensions: ['.tsx', '.ts', '.js'],
-    },
-    output: {
-      path: path.resolve(__dirname, 'build/worker'),
-      filename: 'index.mjs',
-      // library: {
-      //   type: 'module',
-      // },
-    },
-    cache: {
-      type: 'filesystem',
-    },
-    experiments: {
-      outputModule: true,
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'build'),
+      },
+      historyApiFallback: true,
     },
   }
 ]

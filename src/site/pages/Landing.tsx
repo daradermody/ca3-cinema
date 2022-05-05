@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 // @ts-ignore
 import * as Please from 'pleasejs'
 import { API, graphqlOperation } from 'aws-amplify';
-import { listTodos } from './graphql/queries';
+import { listMovies } from '../../graphql/queries';
 import logo from '../assets/logo.png'
 
 
@@ -16,7 +16,7 @@ export default function Landing() {
 
   useEffect(() => {
     async function getMovies() {
-      const movies = await API.graphql(graphqlOperation(listTodos));
+      const movies = await API.graphql(graphqlOperation(listMovies));
       console.log(movies)
     }
     void getMovies()

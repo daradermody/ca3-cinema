@@ -6,12 +6,16 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --mode production",
-    "start": "wrangler dev",
+    "start": "webpack-dev-server --mode development",
     "deploy": "wrangler publish"
   },
   "dependencies": {
     "@aws-amplify/datastore": "^3.10.0",
     "@cloudflare/kv-asset-handler": "^0.2.0",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.6.2",
+    "@mui/material": "^5.6.4",
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.1",
     "aws-amplify": "^4.3.20",
@@ -19,12 +23,13 @@
     "pleasejs": "^0.4.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "throttle-debounce": "^5.0.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.8.0",
     "@types/pleasejs": "^0.0.30",
-    "concurrently": "^7.1.0",
+    "@types/throttle-debounce": "^4.0.0",
     "copy-webpack-plugin": "^10.2.4",
     "file-loader": "^6.2.0",
     "ts-loader": "^9.2.8",

@@ -1,5 +1,6 @@
-import React, { ImgHTMLAttributes } from 'react'
-import styled from 'https://esm.sh/styled-components?deps=react@18'
+import * as React from 'react'
+import { ImgHTMLAttributes } from 'react'
+import styled from '@emotion/styled'
 
 export default function Button(props: ImgHTMLAttributes<HTMLButtonElement>) {
   return (

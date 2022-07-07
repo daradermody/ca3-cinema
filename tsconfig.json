@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "sourceMap": true,
+    "lib": [
+      "ES2015",
+      "ESNext",
+      "dom",
+    ],
+    "jsx": "preserve"
+  },
+  "include": ["src/**/*", "server.ts"],
+  "exclude": [
+    "node_modules"
+  ]
+}

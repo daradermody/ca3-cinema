@@ -1,9 +1,0 @@
-{
-  "tasks": {
-    "build": "deno run -A ./build.ts",
-    "start": "deno run -A --watch=src server.tsx",
-    "start:prod": "DENO_ENV=production deno run -A server.tsx",
-    "deploy": "deployctl deploy --project=ca3 server.tsx"
-  },
-  "importMap": "./importMap.json"
-}

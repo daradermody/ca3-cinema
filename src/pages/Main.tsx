@@ -1,9 +1,9 @@
-import React from 'https://esm.sh/react@18'
-import { Link } from 'https://esm.sh/wouter?deps=react@18'
-import useColour from '../useColour.tsx'
-import Logo from '../components/logo.tsx'
-import PageWrapper from '../components/PageWrapper.tsx'
-import styled from 'https://esm.sh/styled-components?deps=react@18'
+import React from 'react'
+import { Link } from 'wouter'
+import useColour from '../useColour'
+import Logo from '../components/logo'
+import PageWrapper from '../components/PageWrapper'
+import styled from '@emotion/styled'
 
 export default function Main() {
   const votingOpened = true

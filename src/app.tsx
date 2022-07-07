@@ -1,11 +1,12 @@
-import React, {useEffect} from 'https://esm.sh/react@18'
-import { render } from 'https://esm.sh/react-dom@18'
-import { Helmet, HelmetProvider } from 'https://esm.sh/react-helmet-async?deps=react@18'
-import { Route, Switch } from 'https://esm.sh/wouter?deps=react@18'
-import Main from './pages/Main.tsx'
-import MovieList from './pages/MovieList.tsx'
-import Vote from './pages/Vote.tsx'
-import useColour from './useColour.tsx'
+import * as React from 'react'
+import {useEffect} from 'react'
+import { createRoot } from 'react-dom/client'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
+import { Route, Switch } from 'wouter'
+import Main from './pages/Main'
+import MovieList from './pages/MovieList'
+import Vote from './pages/Vote'
+import useColour from './useColour'
 
 function App() {
   const [colour] = useColour()
@@ -31,4 +32,4 @@ function App() {
   )
 }
 
-render(<App/>, document.getElementById('root'))
+createRoot(document.getElementById('root')).render(<App/>)

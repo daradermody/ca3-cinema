@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'https://esm.sh/react@18'
-import Please from 'https://esm.sh/pleasejs'
+import * as React from 'react'
+import { useEffect, useState, useCallback } from 'react'
+import Please from 'pleasejs'
 
 export default function useColour(millis?: number) {
   const [colour, setColour] = useState(Please.make_color())

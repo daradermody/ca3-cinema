@@ -1,8 +1,9 @@
-import React, { ReactNode } from 'https://esm.sh/react@18'
-import styled from 'https://esm.sh/styled-components?deps=react@18'
-import Logo from './logo.tsx'
-import { Link } from 'https://esm.sh/wouter?deps=react@18'
-import useColour from '../useColour.tsx'
+import * as React from 'react'
+import { ReactNode } from 'react'
+import styled from '@emotion/styled'
+import Logo from './logo'
+import { Link } from 'wouter'
+import useColour from '../useColour'
 
 export default function PageWrapper({hideHeader, children}: { hideHeader?: boolean, children?: ReactNode }) {
   const [color, refreshColor] = useColour()

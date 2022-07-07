@@ -1,5 +1,5 @@
-import faunadb from 'https://esm.sh/faunadb'
-import { Movie, SuggestedMovie } from './types.ts'
+import * as faunadb from 'faunadb'
+import { Movie, SuggestedMovie } from './types'
 const q = faunadb.query
 const client = new faunadb.Client({
   secret: getToken('FAUNADB_SECRET'),

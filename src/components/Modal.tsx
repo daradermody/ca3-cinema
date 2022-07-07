@@ -1,8 +1,10 @@
-import React, { ReactNode, useEffect } from 'react'
-import styled from 'https://esm.sh/styled-components?deps=react@18'
-import CloseIcon from 'https://esm.sh/@mui/icons-material/Close';
-import useColour from '../useColour.tsx'
-import Button from './Button.tsx'
+import * as React from 'react'
+import { ReactNode, useEffect } from 'react'
+import styled from '@emotion/styled'
+import CloseIcon from '@mui/icons-material/Close';
+import useColour from '../useColour'
+import Button from './Button'
+import { PropsOf } from '@emotion/react'
 
 export default function Modal({children, onClose}: { children: ReactNode, onClose: () => void }) {
   const [color] = useColour()

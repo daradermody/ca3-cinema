@@ -1,5 +1,5 @@
-import React from 'https://esm.sh/react@18'
-import Logo from '../components/logo.tsx'
+import React from 'react'
+import Logo from '../components/logo'
 
 export default function Vote() {
   return (

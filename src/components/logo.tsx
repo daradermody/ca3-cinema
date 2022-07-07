@@ -1,4 +1,5 @@
-import React, { ImgHTMLAttributes } from 'https://esm.sh/react@18'
+import * as React from 'react'
+import { ImgHTMLAttributes } from 'react'
 
 export default function Logo(props: ImgHTMLAttributes<HTMLImageElement>) {
   return (

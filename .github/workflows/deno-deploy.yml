@@ -28,5 +28,3 @@ jobs:
           project: ca3
           entrypoint: ULTRA.js
           root: .ultra
-        env:
-          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}

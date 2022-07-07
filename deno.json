@@ -1,11 +1,9 @@
 {
   "tasks": {
-    "dev": "mode=dev deno run -A --location=http://localhost:8000 --unstable --no-check server.ts",
-    "build": "deno run -A https://deno.land/x/ultra/build.ts",
-    "start:prod": "deno run -A .ultra/ULTRA.js",
-    "deploy": "cd .ultra/ && deployctl deploy --project=ca3 ULTRA.js",
-    "start": "deno run -A --location=http://localhost:8000 --unstable --no-check server.ts",
-    "vendor": "importMap=importMap.json deno run -A --unstable https://deno.land/x/ultra@v1.0.1/vendor.ts"
+    "build": "deno run -A ./build.ts",
+    "start": "deno run -A --watch=src server.tsx",
+    "start:prod": "DENO_ENV=production deno run -A server.tsx",
+    "deploy": "deployctl deploy --project=ca3 server.tsx"
   },
   "importMap": "./importMap.json"
 }

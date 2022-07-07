@@ -1,35 +1,34 @@
-/** @jsx React.createElement */
-import React, { useState } from 'react'
-import { SWRConfig } from 'swr'
-import { Helmet } from 'react-helmet'
-import { Route, Switch } from 'wouter'
-import ultraCache from 'ultra/cache'
-import { Cache } from 'https://deno.land/x/ultra/src/types.ts'
+import React, {useEffect} from 'https://esm.sh/react@18'
+import { render } from 'https://esm.sh/react-dom@18'
+import { Helmet, HelmetProvider } from 'https://esm.sh/react-helmet-async?deps=react@18'
+import { Route, Switch } from 'https://esm.sh/wouter?deps=react@18'
+import Main from './pages/Main.tsx'
+import MovieList from './pages/MovieList.tsx'
+import Vote from './pages/Vote.tsx'
+import useColour from './useColour.tsx'
 
-const options = (cache: Cache) => ({
-  provider: () => ultraCache(cache),
-  suspense: true,
-})
+function App() {
+  const [colour] = useColour()
 
-const Ultra = ({cache}: { cache: Cache }) => {
-  const [count, setCount] = useState(0)
+  useEffect(() => {
+    document.body.style['background-color'] = colour
+  }, [])
+
   return (
-    <SWRConfig value={options(cache)}>
+    <HelmetProvider>
       <Helmet>
-        <title>Ultra</title>
+        <title>Caʒ Cinema</title>
       </Helmet>
       <main>
         <Switch>
-          <Route path="/">
-            <button onClick={() => setCount(count + 1)}>Click</button>{count}
-          </Route>
-          <Route>
-            <strong>404</strong>
-          </Route>
+          <Route path="/"><Main/></Route>
+          <Route path="/movieList"><MovieList/></Route>
+          <Route path="/vote"><Vote/></Route>
+          <Route><strong>404</strong></Route>
         </Switch>
       </main>
-    </SWRConfig>
+    </HelmetProvider>
   )
 }
 
-export default Ultra
+render(<App/>, document.getElementById('root'))

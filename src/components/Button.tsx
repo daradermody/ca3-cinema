@@ -17,8 +17,7 @@ const StyledButton = styled.button`
   justify-content: center;
   align-items: center;
   box-shadow: 0 0 15px -5px;
-  cursor: pointer;
   &:hover {
-    filter: brightness(90%);
+    filter: brightness(1.1);
   }
 `

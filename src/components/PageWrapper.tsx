@@ -1,21 +1,26 @@
 import * as React from 'react'
-import { ReactNode } from 'react'
+import { ReactNode, useContext } from 'react'
 import styled from '@emotion/styled'
-import Logo from './logo'
+import Logo from './Logo'
 import { Link } from 'wouter'
-import useColour from '../useColour'
+import { UserInfoContext } from './UserInfoContext'
+import { Tooltip } from '@mui/material'
 
 export default function PageWrapper({hideHeader, children}: { hideHeader?: boolean, children?: ReactNode }) {
-  const [color, refreshColor] = useColour()
+  const {user} = useContext(UserInfoContext)
+
   return (
     <div>
       {!hideHeader && (
         <StyledHeader>
           <Link href="/">
-            <HomeLink bgColor={color} onMouseLeave={refreshColor}>
+            <StyledHomeLink>
               <Logo/>
-            </HomeLink>
+            </StyledHomeLink>
           </Link>
+          <Tooltip title={`Logged in as ${user.username}`} placement="left">
+            <StyledProfilePhoto src={user.photo} alt="user photo"/>
+          </Tooltip>
         </StyledHeader>
       )}
       <StyledContainer>
@@ -30,7 +35,7 @@ const StyledContainer = styled.div`
   @media screen and (min-width: 900px) {
     padding: 20px 100px;
   }
-  @media screen and (min-width: 1400px) {
+  @media screen and (min-width: 1536px) {
     padding: 20px 200px;
   }
 `
@@ -38,7 +43,8 @@ const StyledContainer = styled.div`
 const StyledHeader = styled.div`
   height: 80px;
   display: flex;
-  border-bottom: 1px solid black;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--green1);
   padding: 0;
   @media screen and (min-width: 900px) {
     padding: 0 50px;
@@ -48,9 +54,16 @@ const StyledHeader = styled.div`
   }
 `
 
-const HomeLink = styled.a`
+const StyledHomeLink = styled.a`
   padding: 5px 0 0 10px;
+
   &:hover {
-    background-color: ${(props: { bgColor: string }) => props.bgColor}
+    filter: brightness(1.1);
   }
+`
+
+const StyledProfilePhoto = styled.img`
+  border-radius: 50%;
+  background-color: white;
+  margin: 15px;
 `

@@ -1,9 +1,10 @@
-import React from 'react'
+import * as React from 'react'
 import { Link } from 'wouter'
 import useColour from '../useColour'
-import Logo from '../components/logo'
+import Logo from '../components/Logo'
 import PageWrapper from '../components/PageWrapper'
 import styled from '@emotion/styled'
+import { useEffect } from 'react'
 
 export default function Main() {
   const votingOpened = true
@@ -35,15 +36,9 @@ interface CardProps {
 }
 
 function Card({summary, description, href, disabled}: CardProps) {
-  const [colour, refreshColour] = useColour()
 
   return (
-    <StyledLink
-      href={href}
-      disabled={disabled}
-      bgColor={colour}
-      onMouseLeave={refreshColour}
-    >
+    <StyledLink href={href} disabled={disabled}>
       <h1>{summary}</h1>
       <span>{description}</span>
     </StyledLink>
@@ -52,11 +47,16 @@ function Card({summary, description, href, disabled}: CardProps) {
 
 const StyledLogo = styled(Logo)`
   text-align: center;
-  height: 300px;
-  margin: 50px 0;
+  height: 200px;
+  margin: 20px 0;
   width: 500px;
   max-width: 100%;
   object-fit: contain;
+ 
+  @media screen and (min-width: 900px) {
+    height: 300px;
+    margin: 50px 0;
+  }
 `
 
 const StyledCardList = styled.div`
@@ -67,12 +67,11 @@ const StyledCardList = styled.div`
   @media screen and (min-width: 900px) {
     grid-template-columns: 1fr 1fr;
   }
-  @media screen and (min-width: 1400px) {
+  @media screen and (min-width: 1536px) {
   }
 `
 
-const StyledLink = styled<{ disabled: boolean; bgColor: string }>(Link)`
-  min-height: 300px;
+const StyledLink = styled(Link)<{ disabled: boolean }>`
   border: 1px solid black;
   border-radius: 5px;
   color: ${({disabled}) => disabled ? 'grey' : 'black'};
@@ -81,7 +80,13 @@ const StyledLink = styled<{ disabled: boolean; bgColor: string }>(Link)`
   flex-grow: 1;
   padding: 20px 40px 40px;
   font-size: 1.4rem;
+  background-color: var(--green1);
 
   &:hover {
-    background-color: ${({bgColor}) => bgColor};
+    filter: brightness(1.1);
+  };
+
+  @media screen and (min-width: 900px) {
+    min-height: 300px;
+  }
 `

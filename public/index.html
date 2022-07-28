@@ -8,21 +8,76 @@
     <link rel="icon" href="/favicon.ico"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Lexend&family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Lexend&family=Roboto&&display=swap" rel="stylesheet">
     <style>
+      :root {
+        /*--background: #2C1338;*/
+        /*--background: #3a1b48;*/
+        --background: #ededed;
+        /*--primary: #72bf7d;*/
+        --primary: #00a500;
+        /*--text: #f7f7f7;*/
+        --text: black;
+        --green: #00a500;
+        --green1: #72bf7d;
+        /*--green2: #00a500;*/
+        /*--green3: #00a500;*/
+      }
+
       body {
         margin: 0;
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Lato', 'Roboto', sans-serif;
+        background-color: var(--background);
+        color: var(--text);
       }
 
       * {
         box-sizing: border-box;
       }
+
+      .loading-wrapper {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      @keyframes spinner-grow {
+        0% { transform: scale(0); }
+        50% { opacity: 1; }
+      }
+
+      .spinner-grow {
+        display: inline-block;
+        width: 2rem;
+        height: 2rem;
+        vertical-align: text-bottom;
+        background-color: currentColor;
+        border-radius: 50%;
+        opacity: 0;
+        -webkit-animation: spinner-grow .75s linear infinite;
+        animation: spinner-grow .75s linear infinite;
+      }
+
+      .delay1 { animation-delay: 100ms; }
+      .delay2 { animation-delay: 200ms; }
+      .delay3 { animation-delay: 300ms; }
+      .delay4 { animation-delay: 400ms; }
+
     </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root">Loading...</div>
-    <script src="static/app.js"></script>
+    <div id="root">
+      <div class="loading-wrapper">
+        <div class="spinner-grow" role="status"></div>
+        <div class="spinner-grow delay1" role="status"></div>
+        <div class="spinner-grow delay2" role="status"></div>
+        <div class="spinner-grow delay3" role="status"></div>
+        <div class="spinner-grow delay4" role="status"></div>
+      </div>
+    </div>
+    <script src="static/App.js"></script>
   </body>
 </html>

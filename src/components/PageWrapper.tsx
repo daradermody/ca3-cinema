@@ -12,18 +12,20 @@ export default function PageWrapper({hideHeader, children}: { hideHeader?: boole
   return (
     <div>
       {!hideHeader && (
-        <StyledHeader>
-          <Link href="/">
-            <StyledHomeLink>
-              <Logo/>
-            </StyledHomeLink>
-          </Link>
-          <Tooltip title={`Logged in as ${user.username}`} placement="left">
-            <StyledProfilePhoto src={user.photo} alt="user photo"/>
-          </Tooltip>
-        </StyledHeader>
+        <>
+          <StyledHeader>
+            <Link href="/">
+              <StyledHomeLink>
+                <Logo/>
+              </StyledHomeLink>
+            </Link>
+            <Tooltip title={`Logged in as ${user.username}`} placement="left">
+              <StyledProfilePhoto src={user.photo} alt="user photo"/>
+            </Tooltip>
+          </StyledHeader>
+          <hr style={{borderTop: '1px solid #cbcbcb'}}></hr>
+        </>
       )}
-      <hr style={{borderTop: '1px solid #cbcbcb'}}></hr>
       <StyledContainer>
         {children}
       </StyledContainer>

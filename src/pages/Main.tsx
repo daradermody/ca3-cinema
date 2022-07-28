@@ -16,12 +16,12 @@ export default function Main() {
       </div>
 
       <StyledCardList>
-        <Card href="/movieList" summary="Movie list" description="See suggested movies and suggest your own!"/>
+        <Card href="/movieList" summary="Movie list" description="See suggested movies and suggest your own"/>
         <Card
           href="/vote"
           disabled={!votingOpened}
           summary="Vote"
-          description={votingOpened ? 'Cast your vote for the next Caʒ Cinema showing!' : 'Voting is not open at the moment'}
+          description={votingOpened ? 'Cast your vote for the next Caʒ Cinema showing' : 'Voting is not open at the moment'}
         />
       </StyledCardList>
     </PageWrapper>

@@ -64,9 +64,9 @@ function VotingForm({onSubmit}: { onSubmit: () => void }) {
 
   return (
     <PageWrapper>
-      <Typography variant="h1" sx={{mt: 4, mb: 10, textAlign: 'center'}}>Voting is open!</Typography>
+      <Typography variant="h1" sx={{mt: 4, mb: 10, textAlign: 'center'}}>Voting is open</Typography>
       <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 4, mb: 2}}>
-        <Typography variant="h4">Select all the movies you'd like to see!</Typography>
+        <Typography variant="h4">Select all the movies you'd like to see</Typography>
         {mdDisplay && button}
       </Box>
 
@@ -85,7 +85,7 @@ function VotingForm({onSubmit}: { onSubmit: () => void }) {
 function ThanksForVoting() {
   return (
     <StyledThanksWrapper>
-      <h2>Thanks for voting!!</h2>
+      <h2>Thanks for voting!</h2>
       <h5><a href="https://www.youtube.com/watch?v=aRsWk4JZa5k">Have an egg</a></h5>
       <StyledLogo/>
     </StyledThanksWrapper>

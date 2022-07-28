@@ -22,6 +22,7 @@ export default function Login() {
 
   return (
     <PageWrapper hideHeader>
+      <Typography variant="h4" sx={{textAlign: 'center'}}>Click your face, please and thank you!</Typography>
       <StyledUserList>
         {users.map(user => <UserCard key={user.username} user={user} onClick={() => setUser(user)}/>)}
       </StyledUserList>

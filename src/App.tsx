@@ -1,6 +1,6 @@
 import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { Route, Switch } from 'wouter'
 import MovieList from './pages/MovieList'
 import Vote from './pages/Vote'
@@ -8,9 +8,9 @@ import Login from './pages/Login'
 import { UserInfoProvider } from './components/UserInfoContext'
 import { createTheme, ThemeProvider } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
-import { useEffect, useState } from 'react'
-import PageWrapper from './components/PageWrapper'
 import api from './components/api'
+import PageLoading from './components/PageLoading'
+import { Results } from './pages/Results'
 
 const theme = createTheme({
   typography: {
@@ -31,36 +31,42 @@ function App() {
     <ThemeProvider theme={theme}>
       <SnackbarProvider>
         <UserInfoProvider>
-          <HelmetProvider>
-            <Helmet>
-              <title>Caʒ Cinema</title>
-            </Helmet>
-            <main>
-              <Switch>
-                <Route path="/">{<VoteFormOrMovieList/>}</Route>
-                <Route path="/login"><Login/></Route>
-                <Route><strong>404</strong></Route>
-              </Switch>
-            </main>
-          </HelmetProvider>
+          <main>
+            <Switch>
+              <Route path="/">{<MainContent/>}</Route>
+              <Route path="/login"><Login/></Route>
+              <Route><strong>404</strong></Route>
+            </Switch>
+          </main>
         </UserInfoProvider>
       </SnackbarProvider>
     </ThemeProvider>
   )
 }
 
-function VoteFormOrMovieList() {
+function MainContent() {
   const [votingOpen, setVotingOpen] = useState()
+  const [resultsIn, setResultsIn] = useState()
 
   useEffect(() => {
     api.get('/vote/open').then(({data}) => setVotingOpen(data))
   }, [setVotingOpen])
 
-  if (votingOpen === undefined) {
-    return <PageWrapper>Loading...</PageWrapper>
+  useEffect(() => {
+    api.get('/vote/resultsIn').then(({data}) => setResultsIn(data))
+  }, [setResultsIn])
+
+  if (votingOpen === undefined || resultsIn === undefined) {
+    return <PageLoading/>
   }
 
-  return votingOpen ? <Vote/> : <MovieList/>
+  if (resultsIn) {
+    return <Results/>
+  } else if (votingOpen) {
+    return <Vote/>
+  } else {
+    return <MovieList/>
+  }
 }
 
 createRoot(document.getElementById('root')).render(<App/>)

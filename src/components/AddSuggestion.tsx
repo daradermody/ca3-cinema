@@ -57,6 +57,7 @@ export function AddSuggestion({onAdd, addedMovies}: { onAdd: () => void, addedMo
         sx={{
           width: 500,
           maxWidth: '100%',
+          backgroundColor: 'white',
         }}
         ListboxProps={{style: {maxHeight: 'calc(100vh - 250px)'}}}
         open={open && !!query && !!options.length && !selectedMovie}

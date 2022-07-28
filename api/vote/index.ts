@@ -4,7 +4,7 @@ import { getUser, withAuth } from '../_otherstff/authentication'
 import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
 import { withErrorHandling } from '../_otherstff/errorHandling'
 import { ApiError } from 'next/dist/server/api-utils'
-import { currentVotingEvent, hasVoted } from '../_otherstff/voting'
+import { currentVotingEvent, hasVoted, resultsIn } from '../_otherstff/voting'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method !== 'POST') {
@@ -17,19 +17,18 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (await hasVoted(username)) {
     throw new ApiError(409, `${username} already voted`)
   }
-  if (!currentVotingEvent()) {
+  if (!currentVotingEvent() || resultsIn()) {
     throw new ApiError(403, `No voting event is underway`)
   }
 
-  console.log(request.body)
   await submitVote(username, request.body.movieIds)
   response.status(200).end()
 }
 
 async function submitVote(username: Person['username'], movieIds: SuggestedMovie['id'][]) {
   const vote: Vote = {
-    eventId: currentVotingEvent(),
-    movies: movieIds,
+    eventId: currentVotingEvent() as string,
+    movies: Array.from(new Set(movieIds)),
     voter: username,
   }
   await fauna.query(

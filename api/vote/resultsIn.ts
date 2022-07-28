@@ -1,10 +1,10 @@
 import { withAuth } from '../_otherstff/authentication'
 import { withErrorHandling } from '../_otherstff/errorHandling'
 import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
-import { currentVotingEvent, resultsIn } from '../_otherstff/voting'
+import { resultsIn } from '../_otherstff/voting'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
-  response.json(!!currentVotingEvent() && !resultsIn())
+  response.json(resultsIn())
 }
 
 export default withAuth(withErrorHandling(handler))

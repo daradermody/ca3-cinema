@@ -23,6 +23,7 @@ export default function PageWrapper({hideHeader, children}: { hideHeader?: boole
           </Tooltip>
         </StyledHeader>
       )}
+      <hr style={{borderTop: '1px solid #cbcbcb'}}></hr>
       <StyledContainer>
         {children}
       </StyledContainer>
@@ -31,12 +32,14 @@ export default function PageWrapper({hideHeader, children}: { hideHeader?: boole
 }
 
 const StyledContainer = styled.div`
-  padding: 20px 20px;
+  padding: 20px 5px;
+  max-width: 600px;
+  margin: 0 auto;
   @media screen and (min-width: 900px) {
-    padding: 20px 100px;
+    max-width: 850px;
   }
   @media screen and (min-width: 1536px) {
-    padding: 20px 200px;
+    max-width: 1500px;
   }
 `
 
@@ -44,13 +47,15 @@ const StyledHeader = styled.div`
   height: 80px;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid var(--green1);
+  //border-bottom: 1px solid var(--green1);
   padding: 0;
+  margin: 0 auto;
   @media screen and (min-width: 900px) {
-    padding: 0 50px;
+    //max-width: 900px;
   }
-  @media screen and (min-width: 1400px) {
-    padding: 0 100px;
+  @media screen and (min-width: 1536px) {
+    max-width: 1600px;
+    //padding: 0 100px;
   }
 `
 

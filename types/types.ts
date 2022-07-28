@@ -25,3 +25,5 @@ export interface Vote {
   voter: string,
   movies: number[]
 }
+
+export type VotingResult = SuggestedMovie & { votes: number }

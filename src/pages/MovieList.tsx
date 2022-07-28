@@ -11,7 +11,7 @@ export default function MovieList() {
 
   return (
     <PageWrapper>
-      <Typography variant="h4" sx={{mt: 4, mb: 2}}>Suggest a movie!</Typography>
+      <Typography variant="h4" sx={{mt: 4, mb: 2}}>Suggest a movie</Typography>
       <AddSuggestion onAdd={refetch} addedMovies={movies}/>
 
       <Typography variant="h4" sx={{mt: 4, mb: 2}}>Current suggestions</Typography>

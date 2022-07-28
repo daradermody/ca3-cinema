@@ -1,11 +1,11 @@
-import { fauna, MapOf, q } from '../_otherstff/faunaClient'
-import { SuggestedMovie } from '../../types/types'
+import { fauna, q } from '../_otherstff/faunaClient'
 import getToken from '../_otherstff/getToken'
 import axios from 'axios'
 import { getUser, withAuth } from '../_otherstff/authentication'
 import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
 import { withErrorHandling } from '../_otherstff/errorHandling'
 import { ApiError } from 'next/dist/server/api-utils'
+import { getMovies } from '../_otherstff/movies'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method === 'GET') {
@@ -16,24 +16,6 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
   }
 }
 
-async function getMovies(): Promise<SuggestedMovie[]> {
-  const results = await fauna.query<MapOf<SuggestedMovie>>(
-    q.Map(
-      q.Paginate(
-        q.Documents(
-          q.Collection('Movies')
-        )
-      ),
-      (ref) => q.Get(ref)
-    )
-  )
-  return results.data
-    .map(item => ({
-      ...item.data,
-      id: item.ref.value.id,
-    }))
-    .reverse()
-}
 
 async function addMovie(tmdbId: number, userDescription: string, username: string) {
   if (isNaN(tmdbId)) {

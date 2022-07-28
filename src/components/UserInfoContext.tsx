@@ -4,6 +4,7 @@ import { useLocation } from 'wouter'
 import * as queryString from 'query-string'
 import * as cookie from 'cookie'
 import { Person } from '../../types/types'
+import PageLoading from './PageLoading'
 
 export const UserInfoContext = createContext<{ user: Person, setUser: (user: Person) => void }>(null)
 
@@ -35,6 +36,6 @@ export function UserInfoProvider({children}: { children: ReactNode }) {
       </UserInfoContext.Provider>
     )
   } else {
-    return null
+    return <PageLoading/>
   }
 }

@@ -33,9 +33,9 @@ export function SuggestionSubmissionForm({movie, onComplete}: { movie: Movie; on
         <h1 style={{marginTop: 0}}>{movie.title}</h1>
         <div>{movie.overview}</div>
         <StyledForm>
-          <h3>Let others know why you suggested it!</h3>
+          <h3>Let others know why you suggested it</h3>
           <TextField sx={{ width: '100%', border: '1px solid white' }} multiline rows={3} value={reason} onChange={(e) => setReason(e.target.value)}/>
-          <LoadingButton variant="contained" onClick={addMovie} sx={{ marginTop: '10px' }} loading={loading}>Add suggestion!</LoadingButton>
+          <LoadingButton variant="contained" onClick={addMovie} sx={{ marginTop: '10px' }} loading={loading}>Add suggestion</LoadingButton>
         </StyledForm>
       </div>
     </StyledDialog>
@@ -44,12 +44,10 @@ export function SuggestionSubmissionForm({movie, onComplete}: { movie: Movie; on
 
 const StyledDialog = styled.div`
   display: flex;
-  padding: 20px;
   flex-direction: column;
   gap: 20px;
   min-height: 100%;
   @media screen and (min-width: 900px) {
-    padding: 50px 100px;
     flex-direction: row;
     align-items: start;
   }

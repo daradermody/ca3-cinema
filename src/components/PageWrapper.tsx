@@ -4,24 +4,30 @@ import styled from '@emotion/styled'
 import Logo from './Logo'
 import { Link } from 'wouter'
 import { UserInfoContext } from './UserInfoContext'
-import { Tooltip } from '@mui/material'
+import { Box, Menu, MenuItem } from '@mui/material'
 
 export default function PageWrapper({hideHeader, children}: { hideHeader?: boolean, children?: ReactNode }) {
-  const {user} = useContext(UserInfoContext)
+  const {user, setUser} = useContext(UserInfoContext)
+  const [profileAnchorEl, setProfileAnchorEl] = React.useState<null | HTMLElement>(null)
 
   return (
     <div>
       {!hideHeader && (
         <>
           <StyledHeader>
-            <Link href="/">
-              <StyledHomeLink>
-                <Logo/>
-              </StyledHomeLink>
-            </Link>
-            <Tooltip title={`Logged in as ${user.username}`} placement="left">
-              <StyledProfilePhoto src={user.photo} alt="user photo"/>
-            </Tooltip>
+            <Box mt="5px" ml="10px">
+              <Logo/>
+            </Box>
+            <StyledProfilePhoto draggable="false" src={user.photo} alt="user photo" onClick={e => setProfileAnchorEl(e.currentTarget)}/>
+            <Menu
+              anchorEl={profileAnchorEl}
+              open={!!profileAnchorEl}
+              onClose={() => setProfileAnchorEl(null)}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            >
+              <MenuItem onClick={() => setUser(null)}>Logout</MenuItem>
+            </Menu>
           </StyledHeader>
           <hr style={{borderTop: '1px solid #cbcbcb'}}></hr>
         </>
@@ -34,7 +40,7 @@ export default function PageWrapper({hideHeader, children}: { hideHeader?: boole
 }
 
 const StyledContainer = styled.div`
-  padding: 20px 5px;
+  padding: 20px 10px;
   max-width: 600px;
   margin: 0 auto;
   @media screen and (min-width: 900px) {
@@ -56,14 +62,6 @@ const StyledHeader = styled.div`
   }
   @media screen and (min-width: 1536px) {
     max-width: 1600px;
-  }
-`
-
-const StyledHomeLink = styled.a`
-  padding: 5px 0 0 10px;
-
-  &:hover {
-    filter: brightness(1.1);
   }
 `
 

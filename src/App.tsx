@@ -11,16 +11,23 @@ import { SnackbarProvider } from 'notistack'
 import api from './components/api'
 import PageLoading from './components/PageLoading'
 import { Results } from './pages/Results'
+import { VoteState } from '../types/data'
+import ThanksForVoting from './pages/ThanksForVoting'
+import Admin from './pages/Admin'
+import JoiningInstructions from './pages/JoiningInstructions'
 
 const theme = createTheme({
   palette: {
     mode: 'light',
-    primary: {
-      main: '#710193',
-    },
+    background: {default: '#ededed'},
+    primary: {main: '#710193'},
+    action: {selected: '#7101931f'}
   },
   typography: {
-    fontFamily: '"Lato", "Roboto", sans-serif;'
+    fontFamily: '"Lato", "Roboto", sans-serif',
+    h4: {fontSize: '1.7rem'},
+    h5: {fontSize: '1.3rem'},
+    h6: {fontSize: '1.1rem'}
   },
   components: {
     MuiButtonBase: {
@@ -40,6 +47,8 @@ function App() {
             <Switch>
               <Route path="/">{<MainContent/>}</Route>
               <Route path="/login"><Login/></Route>
+              <Route path="/joiningInstructions"><JoiningInstructions/></Route>
+              <Route path="/secretAdminPage"><Admin/></Route>
               <Route><strong>404</strong></Route>
             </Switch>
           </main>
@@ -50,25 +59,28 @@ function App() {
 }
 
 function MainContent() {
-  const [votingOpen, setVotingOpen] = useState()
-  const [resultsIn, setResultsIn] = useState()
+  const [voteState, setVoteState] = useState<VoteState>()
+  const [voted, setVoted] = useState<boolean>()
 
   useEffect(() => {
-    api.get('/vote/open').then(({data}) => setVotingOpen(data))
-  }, [setVotingOpen])
+    api.get<VoteState>('/vote').then(({data}) => setVoteState(data))
+  }, [setVoteState])
 
   useEffect(() => {
-    api.get('/vote/resultsIn').then(({data}) => setResultsIn(data))
-  }, [setResultsIn])
+    api.get('/vote/voted').then(({data}) => setVoted(data))
+  }, [setVoted])
 
-  if (votingOpen === undefined || resultsIn === undefined) {
+  if (voted === undefined || voteState === undefined) {
     return <PageLoading/>
   }
 
-  if (resultsIn) {
-    return <Results/>
-  } else if (votingOpen) {
-    return <Vote/>
+  if (voteState.resultsIn) {
+    return <Results showingTime={voteState.showingTime} downloadLink={voteState.downloadLink}/>
+  } else if (voted) {
+    return <ThanksForVoting/>
+  }
+  if (voteState.votingOpen) {
+    return <Vote isRunoff={voteState.isRunoff} onVote={() => setVoted(true)}/>
   } else {
     return <MovieList/>
   }

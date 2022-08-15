@@ -8,6 +8,7 @@ export const fauna = new faunadb.Client({
   port: 443,
   scheme: 'https',
 })
+export const SETTINGS_REF = q.Ref(q.Collection('Settings'), "338523062048653515")
 
 export interface MapOf<T> {
   data: FaunaDoc<T>[]
@@ -20,9 +21,4 @@ export interface FaunaDoc<T> {
     }
   }
   data: T
-}
-
-export interface Settings {
-  votingEvent: null | `${number}-${number}-${number}`
-  resultsIn: boolean
 }

@@ -75,7 +75,7 @@ export function AddSuggestion({onAdd, addedMovies}: { onAdd: () => void, addedMo
         loading={loading}
         renderOption={(props, option) => (
           <li {...props} key={option.tmdbId} style={{padding: 0}}>
-            <MovieSearchResult movie={option}/>
+            <MovieSearchResult movie={option} alreadyAdded={!!addedMovies.find(movie => movie.tmdbId === option.tmdbId)}/>
           </li>
         )}
         renderInput={(params) => (
@@ -99,7 +99,7 @@ export function AddSuggestion({onAdd, addedMovies}: { onAdd: () => void, addedMo
   )
 }
 
-function MovieSearchResult({movie, onClick}: { movie: Movie, onClick?: () => void }) {
+function MovieSearchResult({movie, alreadyAdded, onClick}: { movie: Movie, alreadyAdded: boolean, onClick?: () => void }) {
   return (
     <StyledMovieSearchResult
       key={movie.tmdbId}
@@ -115,7 +115,7 @@ function MovieSearchResult({movie, onClick}: { movie: Movie, onClick?: () => voi
           {movie.title}
           {movie.year && <span style={{color: 'grey', marginLeft: '5px'}}>({movie.year})</span>}
         </h3>
-        <i>{movie.overview}</i>
+        {alreadyAdded ? <i>Already added</i> : movie.overview}
       </StyledMovieDescription>
     </StyledMovieSearchResult>
   )

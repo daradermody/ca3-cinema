@@ -5,9 +5,11 @@ import api from '../components/api'
 import { VotingResult } from '../../types/data'
 import styled from '@emotion/styled'
 import { MovieCard } from '../components/MovieCard'
-import { Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
+import { DateTime } from 'luxon'
+import ExtLink from '../components/ExtLink'
 
-export function Results() {
+export function Results({showingTime, downloadLink}: {showingTime: string, downloadLink: string}) {
   const [results, setResults] = useState<VotingResult[]>()
 
   useEffect(() => {
@@ -18,25 +20,22 @@ export function Results() {
     return <PageWrapper>Loading...</PageWrapper>
   }
 
-  const highestVotes = results[0].votes
-  const winners = results.filter(movie => movie.votes === highestVotes)
-  const losers = results.filter(movie => movie.votes !== highestVotes)
+  const [winner, ...losers] = results
 
   return (
     <PageWrapper>
-      <Typography variant="h4" sx={{mt: 4, mb: 2}}>
-        Winner{winners.length > 1 && 's*'}
-      </Typography>
+      <Typography variant="h4" sx={{mt: 4, mb: 2}}>Winner</Typography>
       <StyledResultList>
-        {winners.map(movie => (
-          <MovieCard key={movie.id} movie={movie} votes={movie.votes}/>
-        ))}
+        <MovieCard key={winner.id} movie={winner} votes={winner.votes}/>
+        <div>
+          <Typography variant="h6">Details</Typography>
+          <ul>
+            <li>Showing: {DateTime.fromISO(showingTime).toFormat('t, ccc d LLL')}</li>
+            <li>Download link: <ExtLink href={downloadLink}>torrent</ExtLink></li>
+            <li>How to join: <ExtLink href="/joiningInstructions">SyncPlay instructions</ExtLink></li>
+          </ul>
+        </div>
       </StyledResultList>
-      {winners.length > 1 && (
-        <Typography variant="subtitle1" color="text.secondary" sx={{mt: 2}}>
-          * Since multiple movies have tied, they'll compete in a runoff (coming soon!)
-        </Typography>
-      )}
 
       <Typography variant="h4" sx={{mt: 8, mb: 2}}>Runners up</Typography>
       <StyledResultList>
@@ -51,6 +50,7 @@ export function Results() {
 
 const StyledResultList = styled.div`
   justify-content: center;
+  align-items: center;
   display: grid;
   gap: 20px;
   @media screen and (min-width: 900px) {

@@ -1,31 +1,100 @@
 import * as React from 'react'
-import { useCallback, useEffect, useState } from 'react'
-import Logo from '../components/Logo'
+import { useCallback, useState } from 'react'
 import PageWrapper from '../components/PageWrapper'
 import { MovieCard } from '../components/MovieCard'
 import styled from '@emotion/styled'
-import { Box, Typography, useMediaQuery, useTheme } from '@mui/material'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Modal,
+  RadioGroup,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@mui/material'
 import useGetMovies from '../components/useGetMovies'
 import api, { extractMessage } from '../components/api'
 import { SuggestedMovie } from '../../types/data'
 import { useSnackbar } from 'notistack'
 import { LoadingButton } from '@mui/lab'
+import { getPoster } from '../components/getPoster'
 
-export default function Vote() {
-  const [voted, setVoted] = useState<boolean>()
-
-  useEffect(() => {
-    api.get('/vote/voted').then(({data}) => setVoted(data))
-  }, [setVoted])
-
-  if (voted === undefined) {
-    return <PageWrapper>Loading...</PageWrapper>
-  }
-
-  return voted ? <ThanksForVoting/> : <VotingForm onSubmit={() => setVoted(true)}/>
+interface VoteProps {
+  isRunoff: boolean
+  onVote: () => void
 }
 
-function VotingForm({onSubmit}: { onSubmit: () => void }) {
+export default function Vote({onVote, isRunoff}: VoteProps) {
+  return isRunoff ? <SingleVote onSubmit={onVote}/> : <MultiVote onSubmit={onVote}/>
+}
+
+function SingleVote({onSubmit}: { onSubmit: () => void }) {
+  const theme = useTheme()
+  const mdDisplay = useMediaQuery(theme.breakpoints.up('md'))
+  const {enqueueSnackbar} = useSnackbar()
+  const {movies} = useGetMovies()
+  const [selectedMovie, setSelectedMovie] = useState<SuggestedMovie | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = useCallback(async () => {
+    try {
+      setLoading(true)
+      await api.post<null, null, { id: SuggestedMovie['id'] }>('/vote/runoff', {id: selectedMovie.id})
+      onSubmit()
+    } catch (e) {
+      setLoading(false)
+      setSelectedMovie(null)
+      enqueueSnackbar(`Something went wrong: ${extractMessage(e)}`, {variant: 'error'})
+    }
+  }, [setLoading, onSubmit, enqueueSnackbar, selectedMovie])
+
+  const button = (
+    <LoadingButton
+      loading={loading}
+      fullWidth={!mdDisplay}
+      sx={{mt: mdDisplay ? 0 : 2}}
+      size="large"
+      onClick={handleSubmit}
+      variant="contained"
+      disabled={!selectedMovie}
+    >
+      Vote
+    </LoadingButton>
+  )
+
+  return (
+    <PageWrapper>
+      <Typography variant="h1" sx={{mt: 4, mb: 10, textAlign: 'center'}}>Runoff Vote!</Typography>
+      <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 4, mb: 2}}>
+        <Typography variant="h4">You may only select <b>one</b></Typography>
+        {mdDisplay && button}
+      </Box>
+
+      <StyledMovieListWrapper>
+        {
+          movies?.map(movie => (
+            <MovieCard
+              key={movie.id}
+              checked={movie.id === selectedMovie?.id}
+              movie={movie}
+              onClick={() => selectedMovie?.id === movie.id ? setSelectedMovie(null) : setSelectedMovie(movie)}
+            />
+          ))
+          || <span>Loading movies...</span>
+        }
+      </StyledMovieListWrapper>
+
+      {!mdDisplay && button}
+    </PageWrapper>
+  )
+}
+
+function MultiVote({onSubmit}: { onSubmit: () => void }) {
   const theme = useTheme()
   const mdDisplay = useMediaQuery(theme.breakpoints.up('md'))
   const {enqueueSnackbar} = useSnackbar()
@@ -64,7 +133,7 @@ function VotingForm({onSubmit}: { onSubmit: () => void }) {
 
   return (
     <PageWrapper>
-      <Typography variant="h1" sx={{mt: 4, mb: 10, textAlign: 'center'}}>Voting is open</Typography>
+      <Typography variant="h1" sx={{mt: 4, mb: 10, textAlign: 'center'}}>Voting is open!</Typography>
       <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 4, mb: 2}}>
         <Typography variant="h4">Select all the movies you'd like to see</Typography>
         {mdDisplay && button}
@@ -82,16 +151,6 @@ function VotingForm({onSubmit}: { onSubmit: () => void }) {
   )
 }
 
-function ThanksForVoting() {
-  return (
-    <StyledThanksWrapper>
-      <h2>Thanks for voting!</h2>
-      <h5><a href="https://www.youtube.com/watch?v=aRsWk4JZa5k">Have an egg</a></h5>
-      <StyledLogo/>
-    </StyledThanksWrapper>
-  )
-}
-
 const StyledMovieListWrapper = styled.div`
   display: grid;
   gap: 20px;
@@ -101,21 +160,4 @@ const StyledMovieListWrapper = styled.div`
   @media screen and (min-width: 1536px) {
     grid-template-columns: 1fr 1fr 1fr;
   }
-`
-
-const StyledThanksWrapper = styled.div`
-  font-size: 4rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`
-
-const StyledLogo = styled(Logo)`
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  height: 200px;
-  filter: opacity(0.2);
 `

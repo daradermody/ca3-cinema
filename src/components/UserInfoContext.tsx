@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { createContext, ReactNode, useCallback, useEffect, useState } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useLocation } from 'wouter'
 import * as queryString from 'query-string'
 import * as cookie from 'cookie'
@@ -22,11 +22,17 @@ export function UserInfoProvider({children}: { children: ReactNode }) {
   }, [setUser])
 
   const handleSetUser = useCallback((newUser: Person) => {
-    document.cookie = cookie.serialize('user', JSON.stringify(newUser), {sameSite: 'strict'})
-    setUser(newUser)
-    let returnPath = queryString.parse(window.location.search).andWeWillGetYouTo as string
-    returnPath = !returnPath || returnPath === '/login' ? '/' : returnPath
-    setLocation(returnPath)
+    if (newUser) {
+      document.cookie = cookie.serialize('user', JSON.stringify(newUser), {sameSite: 'strict'})
+      setUser(newUser)
+      let returnPath = queryString.parse(window.location.search).andWeWillGetYouTo as string
+      returnPath = !returnPath || returnPath === '/login' ? '/' : returnPath
+      setLocation(returnPath)
+    } else {
+      document.cookie = cookie.serialize('user', null, {maxAge: 0})
+      setUser(null)
+      setLocation('/login')
+    }
   }, [setUser, setLocation])
 
   if (!!user || location === '/login') {
@@ -38,4 +44,9 @@ export function UserInfoProvider({children}: { children: ReactNode }) {
   } else {
     return <PageLoading/>
   }
+}
+
+export function useIsAdmin() {
+  const {user} = useContext(UserInfoContext)
+  return user.username === 'Dara'
 }

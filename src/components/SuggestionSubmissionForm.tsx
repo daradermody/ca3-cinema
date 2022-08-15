@@ -19,6 +19,7 @@ export function SuggestionSubmissionForm({movie, onComplete}: { movie: Movie; on
     setLoading(true)
     try {
       await api.post('/movies', {tmdbId: movie.tmdbId, userDescription: reason})
+      enqueueSnackbar('Movie added to the list', {variant: 'success', autoHideDuration: 3000})
       onComplete()
     } catch(e) {
       enqueueSnackbar(`Something went wrong: ${extractMessage(e)}`, {variant: 'error'})

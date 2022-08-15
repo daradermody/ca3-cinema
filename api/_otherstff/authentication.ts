@@ -17,6 +17,20 @@ export function withAuth(handler: NextApiHandler): NextApiHandler {
   }
 }
 
+export function withAdminAuth(handler: NextApiHandler): NextApiHandler {
+  return (req, res) => {
+    const user = getUserOrNull(req)
+
+    if (!user) {
+      return res.status(401).json({message: 'Credentials required'})
+    } else if (!isAdmin(user)) {
+      return res.status(403).json({message: 'Admin role required'})
+    } else {
+      return handler(req, res)
+    }
+  }
+}
+
 export function getUser(req: NextApiRequest): Person {
   const user = getUserOrNull(req)
   if (!user) {
@@ -28,4 +42,8 @@ export function getUser(req: NextApiRequest): Person {
 function getUserOrNull(req: NextApiRequest): Person | null {
   const serialisedUser = cookie.parse(req.headers.cookie || '').user
   return serialisedUser ? JSON.parse(serialisedUser) : null
+}
+
+export function isAdmin(user: Person) {
+  return user.username === 'Dara'
 }

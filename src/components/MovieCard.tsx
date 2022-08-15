@@ -19,6 +19,7 @@ interface MovieCardProps {
 
 export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardProps) {
   const theme = useTheme()
+  theme.palette.augmentColor
   const mdDisplay = useMediaQuery(theme.breakpoints.up('md'))
   const [showMoreInfo, setShowMoreInfo] = useState(false)
 
@@ -37,16 +38,19 @@ export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardP
           border: checked ? `2px solid ${theme.palette.primary.main}` : 'none',
           margin: checked ? 0 : '2px',
           alignSelf: 'stretch',
+          position: 'relative',
         }}
         onClick={onClick}
       >
         <CardMedia
+          draggable="false"
           sx={{width: 100}}
           component="img"
-          image={getPoster(movie.poster)}
+          src={getPoster(movie.poster)}
           alt={`Poster for ${movie.title}`}
         />
-        <Box sx={{overflow: 'hidden', flexGrow: 1}}>
+        {checked && <StyledCheckmark/>}
+        <Box sx={{overflow: 'hidden', flexGrow: 1, backgroundColor: checked ? theme.palette.action.selected : 'transparent'}}>
           <CardContent sx={{flex: '1 0 auto'}}>
             <Box sx={{display: 'flex', gap: 1}}>
               <Tooltip title={movie.title} placement="top" enterDelay={500}>
@@ -92,4 +96,10 @@ const StyledVotes = styled.div`
   align-items: center;
   padding: 10px;
   border-left: 1px solid lightgrey;
+`
+
+const StyledCheckmark = styled.div`
+  position: absolute;
+  height: 100%;
+  width: 100px;
 `

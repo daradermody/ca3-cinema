@@ -1,7 +1,7 @@
 import { SuggestedMovie } from '../../types/data'
 import * as React from 'react'
-import { useCallback, useContext, useState } from 'react'
-import { UserInfoContext } from './UserInfoContext'
+import { useCallback, useState } from 'react'
+import { useIsAdmin } from './UserInfoContext'
 import DeleteIcon from '@mui/icons-material/Delete'
 import styled from '@emotion/styled'
 import api, { extractMessage } from './api'
@@ -11,7 +11,7 @@ import { getPoster } from './getPoster'
 import { Box, Typography } from '@mui/material'
 
 export function MovieInfo({movie, onDelete}: { movie: SuggestedMovie; onDelete?: () => void }) {
-  const {user} = useContext(UserInfoContext)
+  const isAdmin = useIsAdmin()
   const [deleting, setDeleting] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
 
@@ -34,7 +34,7 @@ export function MovieInfo({movie, onDelete}: { movie: SuggestedMovie; onDelete?:
         {movie.year && <Typography variant="subtitle1" color="text.secondary">({movie.year})</Typography>}
         <Box sx={{mt: 1}}>{movie.overview}</Box>
         <UserDescription username={movie.suggester} description={movie.userDescription}/>
-        <StyledActions show={user.username === 'Dara'}>
+        <StyledActions show={isAdmin}>
           {onDelete && (
             <LoadingButton aria-label="delete" onClick={removeSelectedMovie} color="error" variant="contained" loading={deleting}>
               <DeleteIcon/>
@@ -50,8 +50,12 @@ function UserDescription({username, description}: { username: any; description?:
   if (description) {
     return (
       <StyledQuote>
-        <i style={{fontSize: '1.2em'}}>"{description}"</i>
-        <figcaption style={{margin: '10px 0 0 20px'}}>— {username}</figcaption>
+        <legend>
+          <Typography variant="subtitle1" color="text.secondary">Suggested by {username}</Typography>
+        </legend>
+        <Typography variant="h6" sx={{lineHeight:'1.5rem'}}>
+          <i>{description}</i>
+        </Typography>
       </StyledQuote>
     )
   } else {
@@ -82,10 +86,9 @@ const StyledActions = styled.div<{ show: boolean }>`
   gap: 10px;
 `
 
-const StyledQuote = styled.blockquote`
+const StyledQuote = styled.fieldset`
   background-color: transparent;
   border: 1px solid dimgrey;
   margin: 1em 0;
-  padding: 12px 20px;
   border-radius: 5px;
 `

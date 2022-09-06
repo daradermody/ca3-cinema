@@ -70,7 +70,7 @@ async function finishEvent() {
   if (!settings.votingEvent) {
     throw new ApiError(400, 'No voting event in progress')
   }
-  await updateSettings({votingEvent: '', runoffMovies: [], resultsIn: false})
+  await updateSettings({downForMaintenance: false, votingEvent: '', runoffMovies: [], resultsIn: false})
 }
 
 export default withAuth(withErrorHandling(handler))

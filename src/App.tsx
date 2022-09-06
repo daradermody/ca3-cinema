@@ -6,7 +6,7 @@ import MovieList from './pages/MovieList'
 import Vote from './pages/Vote'
 import Login from './pages/Login'
 import { UserInfoProvider } from './components/UserInfoContext'
-import { createTheme, ThemeProvider } from '@mui/material'
+import { Box, createTheme, ThemeProvider, Typography } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
 import api from './components/api'
 import PageLoading from './components/PageLoading'
@@ -15,6 +15,7 @@ import { VoteState } from '../types/data'
 import ThanksForVoting from './pages/ThanksForVoting'
 import Admin from './pages/Admin'
 import JoiningInstructions from './pages/JoiningInstructions'
+import Logo from './components/Logo'
 
 const theme = createTheme({
   palette: {
@@ -59,8 +60,13 @@ function App() {
 }
 
 function MainContent() {
+  const [downForMaintenance, setDownForMaintenance] = useState<boolean>()
   const [voteState, setVoteState] = useState<VoteState>()
   const [voted, setVoted] = useState<boolean>()
+
+  useEffect(() => {
+    api.get<boolean>('/maintenance').then(({data}) => setDownForMaintenance(data))
+  }, [setDownForMaintenance])
 
   useEffect(() => {
     api.get<VoteState>('/vote').then(({data}) => setVoteState(data))
@@ -70,7 +76,11 @@ function MainContent() {
     api.get('/vote/voted').then(({data}) => setVoted(data))
   }, [setVoted])
 
-  if (voted === undefined || voteState === undefined) {
+  if (downForMaintenance) {
+    return <DownForMaintenance/>
+  }
+
+  if (downForMaintenance === undefined || voted === undefined || voteState === undefined) {
     return <PageLoading/>
   }
 
@@ -84,6 +94,15 @@ function MainContent() {
   } else {
     return <MovieList/>
   }
+}
+
+function DownForMaintenance() {
+  return (
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
+      <Logo height="300px"/>
+      <Typography variant="h1" sx={{mt: 4, mb: 10, textAlign: 'center'}}>Down for maintenance!</Typography>
+    </Box>
+  )
 }
 
 createRoot(document.getElementById('root')).render(<App/>)

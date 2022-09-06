@@ -1,4 +1,5 @@
 export interface Settings {
+  downForMaintenance: boolean
   votingEvent: '' | `${number}-${number}-${number}`
   resultsIn: boolean
   runoffMovies: SuggestedMovie['id'][]

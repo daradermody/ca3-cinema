@@ -1,14 +1,15 @@
-import { fauna, q } from '../_otherstff/faunaClient'
-import { Person, SuggestedMovie, Vote, VoteState } from '../../types/data'
-import { getUser, isAdmin, withAuth } from '../_otherstff/authentication'
+import { fauna } from '../_otherstff/fauna/client'
+import { Person, SuggestedMovie, VoteCreation, VoteEvent } from '../../types/data'
+import { getUser, withAuth } from '../_otherstff/authentication'
 import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
 import { withErrorHandling } from '../_otherstff/errorHandling'
 import { ApiError } from 'next/dist/server/api-utils'
-import { getSettings, hasVoted, updateSettings, votingOpen } from '../_otherstff/voting'
+import { getActiveEvent, getSettings, hasVoted, updateSettings } from '../_otherstff/voting'
+import { activeVotingEvent, createItem, Movies, ref, VoteEvents, Votes } from '../_otherstff/fauna/queries'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method === 'GET') {
-    response.json(await getVoteInformation({includeAdmin: isAdmin(getUser(request))}))
+    response.json(await getActiveEvent())
   } else if (request.method === 'POST') {
     await handleVoteSubmission(request)
     response.status(200).end()
@@ -20,49 +21,41 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
   }
 }
 
-async function getVoteInformation(options: { includeAdmin: boolean }): Promise<VoteState> {
-  const {votingEvent, resultsIn, runoffMovies, showingTime, downloadLink} = await getSettings()
-  const baseState = {
-    votingOpen: !!votingEvent && !resultsIn,
-    resultsIn,
-    isRunoff: !!runoffMovies.length,
-    showingTime,
-    downloadLink,
-  }
-  const adminState = {votingEvent, runoffMovies}
-  return options.includeAdmin ? {...baseState, ...adminState} : baseState
-}
-
 async function handleVoteSubmission(request: NextApiRequest) {
-  if (!request.body.movieIds || request.body.movieIds.some((id: any) => typeof id !== 'string')) {
-    throw new ApiError(400, 'Invalid movie ID')
-  }
   const {username} = getUser(request)
-  const [userHasVoted, votingIsOpen] = await Promise.all([hasVoted(username), votingOpen()])
+
+  const [activeEvent, userHasVoted] = await Promise.all([
+    fauna.query<VoteEvent>(activeVotingEvent),
+    hasVoted(username)
+  ])
+
+  if (!activeEvent || activeEvent.winner) {
+    throw new ApiError(403, `No voting event is underway`)
+  }
   if (userHasVoted) {
     throw new ApiError(409, `${username} already voted`)
   }
-  if (!votingIsOpen) {
-    throw new ApiError(403, `No voting event is underway`)
+
+  const movieIds = request.body.movieIds
+  if (activeEvent.runoffOf && movieIds.length > 1) {
+    throw new ApiError(400, 'Runoff votes can only specify one movie ID')
   }
 
-  await submitVote(username, request.body.movieIds)
+  const acceptedMovieIds = activeEvent.votingOptions.map(option => option.id)
+  if (!movieIds || movieIds.some((id: any) => !acceptedMovieIds.includes(id))) {
+    throw new ApiError(400, 'Invalid movie ID')
+  }
+
+  await submitVote(activeEvent, username, request.body.movieIds)
 }
 
-async function submitVote(username: Person['username'], movieIds: SuggestedMovie['id'][]) {
-  const vote: Vote = {
-    eventId: (await getSettings()).votingEvent,
-    movies: Array.from(new Set(movieIds)),
+async function submitVote(event: VoteEvent, username: Person['username'], movieIds: SuggestedMovie['id'][]) {
+  const vote: VoteCreation = {
+    event: ref(VoteEvents, event.id),
+    movies: Array.from(new Set(movieIds)).map(id => ref(Movies, id)),
     voter: username,
   }
-  await fauna.query(
-    q.Create(
-      q.Collection('Votes'),
-      {
-        data: vote
-      }
-    )
-  )
+  await fauna.query(createItem(Votes, vote))
 }
 
 async function finishEvent() {
@@ -70,7 +63,7 @@ async function finishEvent() {
   if (!settings.votingEvent) {
     throw new ApiError(400, 'No voting event in progress')
   }
-  await updateSettings({downForMaintenance: false, votingEvent: '', runoffMovies: [], resultsIn: false})
+  await updateSettings({downForMaintenance: settings.downForMaintenance, votingEvent: null})
 }
 
 export default withAuth(withErrorHandling(handler))

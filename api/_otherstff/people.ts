@@ -12,14 +12,14 @@ export const AUTHORIZED_PEOPLE: Person[] = [
     username: 'Laura',
     firstName: 'Laura',
     lastName: 'Phelan',
-    nickname: 'Alpha',
+    nickname: 'Loudsprout',
     photo: 'https://cdn.discordapp.com/avatars/226030480808607745/a0a84d6e365d3830b9e7db39c7356875.webp'
   },
   {
     username: 'Ariel',
     firstName: 'Ariel',
     lastName: 'Duke',
-    nickname: 'Alphalpha',
+    nickname: 'Dukey',
     photo: 'https://cdn.discordapp.com/avatars/276912882304811009/04af342bb1597003065a331a74b07a07.webp'
   },
   {

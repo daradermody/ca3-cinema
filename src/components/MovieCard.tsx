@@ -1,13 +1,11 @@
 import { SuggestedMovie } from '../../types/data'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import * as React from 'react'
+import { useCallback, useState } from 'react'
 import styled from '@emotion/styled'
 import { getPoster } from './getPoster'
-import { Box, Button, Card, CardActions, CardContent, CardMedia, IconButton, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material'
 import Modal from './Modal'
 import { MovieInfo } from './MovieInfo'
-import { useCallback, useState } from 'react'
 
 interface MovieCardProps {
   movie: SuggestedMovie

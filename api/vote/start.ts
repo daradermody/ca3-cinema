@@ -3,6 +3,10 @@ import { ApiError } from 'next/dist/server/api-utils'
 import { withAdminAuth } from '../_otherstff/authentication'
 import { withErrorHandling } from '../_otherstff/errorHandling'
 import { getSettings, updateSettings } from '../_otherstff/voting'
+import { fauna } from '../_otherstff/fauna/client'
+import { Expr } from 'faunadb'
+import { collectionRefs, createItem, Movies, VoteEvents } from '../_otherstff/fauna/queries'
+import { VoteEventCreation } from '../../types/data'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method !== 'POST') {
@@ -13,14 +17,17 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
   }
 
   const settings = await getSettings()
-  if (settings.votingEvent) {
-    throw new ApiError(409, `Voting event already underway: ${settings.votingEvent}`)
-  }
-  if (settings.resultsIn) {
-    throw new ApiError(400, `Results are already in for ${settings.votingEvent}. Close the event first.`)
+  if (!!settings.votingEvent) {
+    throw new ApiError(409, `Voting event already underway`)
   }
 
-  await updateSettings({ ...settings, votingEvent: request.body.name.trim() })
+  const voteEvent: VoteEventCreation = {
+    name: request.body.name.trim(),
+    votingOptions: await fauna.query(collectionRefs(Movies)),
+  }
+  const {ref} = await fauna.query<{ ref: Expr }>(createItem(VoteEvents, voteEvent))
+
+  await updateSettings({downForMaintenance: settings.downForMaintenance, votingEvent: ref})
   response.status(200).end()
 }
 

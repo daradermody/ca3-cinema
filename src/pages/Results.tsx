@@ -2,25 +2,34 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import PageWrapper from '../components/PageWrapper'
 import api from '../components/api'
-import { VotingResult } from '../../types/data'
+import { SuggestedMovie, VotingResult } from '../../types/data'
 import styled from '@emotion/styled'
 import { MovieCard } from '../components/MovieCard'
-import { Box, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import ExtLink from '../components/ExtLink'
 
-export function Results({showingTime, downloadLink}: {showingTime: string, downloadLink: string}) {
-  const [results, setResults] = useState<VotingResult[]>()
+interface ResultsProps {
+  winnerId: SuggestedMovie['id']
+  showingTime: string
+  downloadLink: string
+}
+
+export function Results({winnerId, showingTime, downloadLink}: ResultsProps) {
+  const [winner, setWinner] = useState<VotingResult>()
+  const [losers, setLosers] = useState<VotingResult[]>()
 
   useEffect(() => {
-    api.get<VotingResult[]>('/vote/results').then(({data}) => setResults(data))
-  }, [setResults])
+    api.get<VotingResult[]>('/vote/results')
+      .then(({data}) => {
+        setWinner(data.find(m => m.id === winnerId))
+        setLosers(data.filter(m => m.id !== winnerId))
+      })
+  }, [setLosers])
 
-  if (results === undefined) {
+  if (losers === undefined) {
     return <PageWrapper>Loading...</PageWrapper>
   }
-
-  const [winner, ...losers] = results
 
   return (
     <PageWrapper>

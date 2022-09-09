@@ -11,11 +11,11 @@ import { SnackbarProvider } from 'notistack'
 import api from './components/api'
 import PageLoading from './components/PageLoading'
 import { Results } from './pages/Results'
-import { VoteState } from '../types/data'
 import ThanksForVoting from './pages/ThanksForVoting'
 import Admin from './pages/Admin'
 import JoiningInstructions from './pages/JoiningInstructions'
 import Logo from './components/Logo'
+import { VoteEvent } from '../types/data'
 
 const theme = createTheme({
   palette: {
@@ -61,7 +61,7 @@ function App() {
 
 function MainContent() {
   const [downForMaintenance, setDownForMaintenance] = useState<boolean>()
-  const [voteState, setVoteState] = useState<VoteState>()
+  const [activeEvent, setActiveEvent] = useState<VoteEvent>()
   const [voted, setVoted] = useState<boolean>()
 
   useEffect(() => {
@@ -69,8 +69,8 @@ function MainContent() {
   }, [setDownForMaintenance])
 
   useEffect(() => {
-    api.get<VoteState>('/vote').then(({data}) => setVoteState(data))
-  }, [setVoteState])
+    api.get<VoteEvent>('/vote').then(({data}) => setActiveEvent(data))
+  }, [setActiveEvent])
 
   useEffect(() => {
     api.get('/vote/voted').then(({data}) => setVoted(data))
@@ -80,19 +80,18 @@ function MainContent() {
     return <DownForMaintenance/>
   }
 
-  if (downForMaintenance === undefined || voted === undefined || voteState === undefined) {
+  if (downForMaintenance === undefined || voted === undefined || activeEvent === undefined) {
     return <PageLoading/>
   }
 
-  if (voteState.resultsIn) {
-    return <Results showingTime={voteState.showingTime} downloadLink={voteState.downloadLink}/>
+  if (!activeEvent) {
+    return <MovieList/>
+  } else if (activeEvent.winner) {
+    return <Results winnerId={activeEvent.winner.id} showingTime={activeEvent.showingTime} downloadLink={activeEvent.downloadLink}/>
   } else if (voted) {
     return <ThanksForVoting/>
-  }
-  if (voteState.votingOpen) {
-    return <Vote isRunoff={voteState.isRunoff} onVote={() => setVoted(true)}/>
   } else {
-    return <MovieList/>
+    return <Vote options={activeEvent.votingOptions} isRunoff={!!activeEvent.runoffOf} onVote={() => setVoted(true)}/>
   }
 }
 

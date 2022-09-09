@@ -2,10 +2,11 @@ import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
 import { ApiError } from 'next/dist/server/api-utils'
 import { withAdminAuth } from '../_otherstff/authentication'
 import { withErrorHandling } from '../_otherstff/errorHandling'
-import { getSettings, updateSettings } from '../_otherstff/voting'
-import { RunoffVote, Settings, SuggestedMovie, Vote } from '../../types/data'
-import { fauna, q } from '../_otherstff/faunaClient'
+import { getActiveEvent } from '../_otherstff/voting'
+import { VoteEventCreation } from '../../types/data'
+import { fauna } from '../_otherstff/fauna/client'
 import { DateTime } from 'luxon'
+import { Movies, ref, updateItem, VoteEvents } from '../_otherstff/fauna/queries'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method !== 'POST') {
@@ -21,48 +22,29 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
     throw new ApiError(400, 'Invalid showing time')
   }
 
-  const settings = await getSettings()
-
-  if (!settings.votingEvent) {
+  const activeEvent = await getActiveEvent()
+  if (!activeEvent) {
     throw new ApiError(400, 'No voting event in progress')
   }
-  if (settings.resultsIn) {
-    throw new ApiError(400, `Results are already in for ${settings.votingEvent}`)
+  if (activeEvent.winner) {
+    throw new ApiError(400, `Results are already in for ${activeEvent.name}`)
   }
 
-  if (request.body.movieId) {
-    if (typeof request.body.movieId !== 'string' || !request.body.movieId.trim().length) {
-      throw new ApiError(400, 'Invalid movie ID')
-    }
-    if (!settings.runoffMovies.length) {
-      throw new ApiError(400, 'System voting can only be done when closing a runoff')
-    }
-    await submitVote(settings.votingEvent, request.body.movieId)
+  const movieId = request.body.movieId
+  if (movieId && (typeof movieId !== 'string' || !movieId || !activeEvent.votingOptions.find(m => m.id !== movieId))) {
+    throw new ApiError(400, 'Invalid movie ID')
   }
 
-  await updateSettings({
-    ...settings,
-    resultsIn: true,
-    showingTime: request.body.showingTime,
-    downloadLink: request.body.downloadLink
-  })
+  const updatedEvent: VoteEventCreation = {
+    name: activeEvent.name,
+    votingOptions: activeEvent.votingOptions.map(option => ref(Movies, option.id)),
+    showingTime: activeEvent.showingTime,
+    downloadLink: activeEvent.showingTime,
+    runoffOf: activeEvent.runoffOf?.id ? ref(VoteEvents, activeEvent.runoffOf.id) : undefined,
+    winner: ref(Movies, movieId),
+  }
+  await fauna.query(updateItem(ref(VoteEvents, activeEvent.id), updatedEvent))
   response.status(200).end()
-}
-
-async function submitVote(eventId: Settings['votingEvent'], movieId: SuggestedMovie['id']) {
-  const vote: RunoffVote = {
-    eventId: `${eventId}-runoff`,
-    movie: movieId,
-    voter: 'System',
-  }
-  await fauna.query(
-    q.Create(
-      q.Collection('Votes'),
-      {
-        data: vote
-      }
-    )
-  )
 }
 
 export default withAdminAuth(withErrorHandling(handler))

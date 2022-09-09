@@ -2,7 +2,6 @@ import * as React from 'react'
 import { ReactNode, useContext } from 'react'
 import styled from '@emotion/styled'
 import Logo from './Logo'
-import { Link } from 'wouter'
 import { UserInfoContext } from './UserInfoContext'
 import { Box, Menu, MenuItem } from '@mui/material'
 

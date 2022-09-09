@@ -3,11 +3,10 @@ import { useCallback, useEffect, useState } from 'react'
 import PageWrapper from '../components/PageWrapper'
 import { useIsAdmin } from '../components/UserInfoContext'
 import { useLocation } from 'wouter'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material'
-import { AdminVoteState, isRunoffVote, RunoffVote, SuggestedMovie, Vote, VotingResult } from '../../types/data'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material'
+import { SuggestedMovie, Vote, VoteEvent, VotingResult } from '../../types/data'
 import api, { extractMessage } from '../components/api'
 import PageLoading from '../components/PageLoading'
-import useGetMovies from '../components/useGetMovies'
 import { LoadingButton } from '@mui/lab'
 import { useSnackbar } from 'notistack'
 import { DateTime } from 'luxon'
@@ -15,22 +14,25 @@ import { DateTime } from 'luxon'
 export default function Admin() {
   const isAdmin = useIsAdmin()
   const [_, setLocation] = useLocation()
-  const {movies} = useGetMovies()
-  const [voteState, setVoteState] = useState<AdminVoteState>()
-  const [votes, setVotes] = useState<(Vote | RunoffVote)[]>()
+  const [activeVoteEvent, setActiveVoteEvent] = useState<VoteEvent | null>()
+  const [votes, setVotes] = useState<Vote[]>()
   const [results, setResults] = useState<VotingResult[]>()
 
   useEffect(() => {
-    api.get<AdminVoteState>('/vote').then(({data}) => setVoteState(data))
-  }, [setVoteState])
+    api.get<VoteEvent>('/vote').then(({data}) => setActiveVoteEvent(data))
+  }, [setActiveVoteEvent])
 
   useEffect(() => {
-    api.get<(Vote | RunoffVote)[]>('/vote/all').then(({data}) => setVotes(data))
+    api.get<Vote[]>('/vote/all').then(({data}) => setVotes(data))
   }, [setVotes])
 
   useEffect(() => {
-    api.get<VotingResult[]>('/vote/results').then(({data}) => setResults(data))
-  }, [setVotes])
+    if (activeVoteEvent) {
+      api.get<VotingResult[]>('/vote/results').then(({data}) => setResults(data))
+    } else if (activeVoteEvent === null) {
+      setResults([])
+    }
+  }, [activeVoteEvent, setVotes])
 
   useEffect(() => {
     if (!isAdmin) {
@@ -38,47 +40,53 @@ export default function Admin() {
     }
   })
 
-  const getMovieTitle = useCallback(id => movies.find(m => m.id === id).title, [movies])
-
-  if (!movies || !votes || !voteState || !results) {
+  if (!votes || activeVoteEvent === undefined || !results) {
     return <PageLoading/>
+  }
+
+  if (!activeVoteEvent) {
+    return (
+      <PageWrapper>
+        <Typography variant="h4" sx={{mt: 4, mb: 2}}>Voting state</Typography>
+        <div>No active vote event</div>
+        <AdminActions voteEvent={activeVoteEvent} results={results}/>
+      </PageWrapper>
+    )
   }
 
   return (
     <PageWrapper>
-      <Typography variant="h4" sx={{mt: 4, mb: 2}}>Voting state</Typography>
+      <Typography variant="h4" sx={{mt: 4, mb: 2}}>Vote info</Typography>
       <ul>
-        <li>Voting event: {voteState.votingEvent || <i>[none]</i>}</li>
-        <li>Results in: {`${voteState.resultsIn}`}</li>
-        <li>Runoff movies: {voteState.runoffMovies.map(getMovieTitle).join(', ') || <i>[none]</i>}</li>
+        <li>Voting event: {activeVoteEvent.name || <i>[none]</i>}</li>
+        <li>Results in: {`${!!activeVoteEvent.winner}`}</li>
       </ul>
 
-      <Typography variant="h6" sx={{mt: 4, mb: 2}}>Voters {!!voteState.runoffMovies.length && ' (in runoff)'}</Typography>
+      <Typography variant="h6" sx={{mt: 4, mb: 2}}>Voters {!!activeVoteEvent.runoffOf && ' (in runoff)'}</Typography>
       <ul>
-        {votes.map(vote => {
-          const movies = isRunoffVote(vote) ? [vote.movie] : vote.movies
-          return <li key={vote.voter}>{vote.voter} | {movies.map(getMovieTitle).join(', ')}</li>
-        })}
+        {votes.map(vote => <li key={vote.voter}>{vote.voter} | {vote.movies.map(m => m.title).join(', ')}</li>)}
       </ul>
 
-      <Typography variant="h6" sx={{mt: 4, mb: 2}}>Leaderboard {!!voteState.runoffMovies.length && ' (in runoff)'}</Typography>
+      <Typography variant="h6" sx={{mt: 4, mb: 2}}>Leaderboard {!!activeVoteEvent.runoffOf && ' (in runoff)'}</Typography>
       <ul>
         {results.map(movie => <li key={movie.id}>{movie.votes} | {movie.title}</li>)}
       </ul>
 
-      <AdminActions voteState={voteState} results={results}/>
+      <AdminActions voteEvent={activeVoteEvent} results={results}/>
     </PageWrapper>
   )
 }
 
-function AdminActions({voteState, results}: { voteState: AdminVoteState, results: VotingResult[] }) {
+function AdminActions({voteEvent, results}: { voteEvent?: VoteEvent, results: VotingResult[] }) {
   const reload = useCallback(() => location.reload(), [])
   return (
     <>
       <Typography variant="h4" sx={{mt: 4, mb: 2}}>Actions</Typography>
-      {!voteState.votingEvent && <StartVotingEvent onSubmit={reload}/>}
-      {voteState.votingEvent && !voteState.resultsIn && <StopVoting results={results} isRunoff={!!voteState.runoffMovies.length} onSubmit={reload}/>}
-      {voteState.votingEvent && voteState.resultsIn && <FinishEvent onSubmit={reload}/>}
+      <Box display="flex" gap="10px">
+        {!voteEvent && <StartVotingEvent onSubmit={reload}/>}
+        {voteEvent && !voteEvent?.winner && <StopVoting results={results} isRunoff={!!voteEvent.runoffOf} onSubmit={reload}/>}
+        {voteEvent && <FinishEvent onSubmit={reload} cancelled={!voteEvent.winner}/>}
+      </Box>
     </>
   )
 }
@@ -131,7 +139,7 @@ function StopVoting({results, isRunoff, onSubmit}: { results: VotingResult[], is
   const {enqueueSnackbar} = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [showWinnerModal, setShowWinnerModal] = useState(false)
-  const highestVotes = results[0].votes
+  const highestVotes = results[0]?.votes || 0
   const winningMovies = results.filter(movie => movie.votes === highestVotes)
   const isDraw = winningMovies.length > 1
   const nextSaturday = DateTime.now().endOf('week').minus({days: 1}).set({hour: 22}).startOf('hour').toUTC().toISO()
@@ -158,7 +166,7 @@ function StopVoting({results, isRunoff, onSubmit}: { results: VotingResult[], is
   async function handleSubmit() {
     try {
       setLoading(true)
-      await api.post('/vote/close', {movieId: chosenWinner, downloadLink, showingTime})
+      await api.post('/vote/close', {movieId: chosenWinner || winningMovies[0].id, downloadLink, showingTime})
       onSubmit()
     } catch (e) {
       enqueueSnackbar(`Something went wrong: ${extractMessage(e)}`, {variant: 'error'})
@@ -190,7 +198,7 @@ function StopVoting({results, isRunoff, onSubmit}: { results: VotingResult[], is
               ))}
             </ul>
           )}
-          {winningMovies.length === 1 && <div>Winner: {winningMovies[0].title}</div>}
+          {winningMovies.length === 1 && <Typography variant="h6" sx={{mb: 2}}>Winner: {winningMovies[0].title}</Typography>}
 
           <TextField
             label="Showing time (UTC)"
@@ -219,7 +227,7 @@ function StopVoting({results, isRunoff, onSubmit}: { results: VotingResult[], is
   )
 }
 
-function FinishEvent({onSubmit}: { onSubmit: () => void }) {
+function FinishEvent({onSubmit, cancelled}: { onSubmit: () => void, cancelled?: boolean }) {
   const {enqueueSnackbar} = useSnackbar()
   const [loading, setLoading] = useState(false)
 
@@ -236,8 +244,8 @@ function FinishEvent({onSubmit}: { onSubmit: () => void }) {
   }
 
   return (
-    <LoadingButton loading={loading} variant="contained" onClick={finishEvent}>
-      Finish event
+    <LoadingButton loading={loading} variant="contained" color={cancelled ? 'error' : 'primary'} onClick={finishEvent}>
+      {cancelled ? 'Cancel event' : 'Finish event'}
     </LoadingButton>
   )
 }

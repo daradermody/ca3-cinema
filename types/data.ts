@@ -1,10 +1,16 @@
+import { Expr } from 'faunadb'
+import { ExprVal } from 'faunadb/src/types/query'
+
+type Ref = string
+
 export interface Settings {
   downForMaintenance: boolean
-  votingEvent: '' | `${number}-${number}-${number}`
-  resultsIn: boolean
-  runoffMovies: SuggestedMovie['id'][]
-  showingTime?: string
-  downloadLink?: string
+  votingEvent?: VoteEvent
+}
+
+export interface SettingsCreation {
+  downForMaintenance: Settings['downForMaintenance']
+  votingEvent: Expr | null
 }
 
 export interface Movie {
@@ -16,10 +22,12 @@ export interface Movie {
 }
 
 export interface SuggestedMovie extends Movie {
-  id: number
+  id: Ref
   suggester: string
   userDescription?: string
 }
+
+export type SuggestedMovieCreation = Omit<SuggestedMovie, 'id'>
 
 export interface Person {
   username: string;
@@ -30,29 +38,34 @@ export interface Person {
 }
 
 export interface Vote {
-  eventId: string,
-  voter: string,
-  movies: SuggestedMovie['id'][]
+  event: VoteEvent
+  voter: string
+  movies: SuggestedMovie[]
 }
 
-export interface RunoffVote {
-  eventId: `${string}-runoff`,
-  voter: string,
-  movie: SuggestedMovie['id']
+export interface VoteCreation {
+  event: ExprVal
+  voter: string
+  movies: ExprVal[]
 }
-
-export interface VoteState {
-  votingOpen: boolean
-  resultsIn: boolean
-  isRunoff: boolean
-  showingTime?: string
-  downloadLink?: string
-}
-
-export function isRunoffVote(vote: Vote | RunoffVote): vote is RunoffVote {
-  return 'movie' in vote
-}
-
-export type AdminVoteState = VoteState & Settings
 
 export type VotingResult = SuggestedMovie & { votes: number }
+
+export interface VoteEvent {
+  id: Ref
+  name: string
+  votingOptions: SuggestedMovie[]
+  showingTime?: string
+  downloadLink?: string
+  runoffOf?: VoteEvent
+  winner?: SuggestedMovie
+}
+
+export interface VoteEventCreation {
+  name: string
+  votingOptions: ExprVal[]
+  showingTime?: string
+  downloadLink?: string
+  runoffOf?: ExprVal
+  winner?: ExprVal
+}

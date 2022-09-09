@@ -1,26 +1,27 @@
 import { getUser, isAdmin, withAuth } from '../_otherstff/authentication'
 import { withErrorHandling } from '../_otherstff/errorHandling'
 import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
-import { isRunoffVote, RunoffVote, Settings, SuggestedMovie, Vote, VotingResult } from '../../types/data'
-import { getMovies } from '../_otherstff/movies'
+import { SuggestedMovie, VoteEvent, VotingResult } from '../../types/data'
 import { ApiError } from 'next/dist/server/api-utils'
-import { getSettings, votesByCurrentEvent } from '../_otherstff/voting'
+import { getActiveEvent, votesByCurrentEvent } from '../_otherstff/voting'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
-  const settings = await getSettings()
-  if (!isAdmin(getUser(request)) && !settings.resultsIn) {
+  const voteEvent = await getActiveEvent()
+  if (!voteEvent) {
+    throw new ApiError(400, 'No vote event underway')
+  }
+
+  if (!isAdmin(getUser(request)) && !voteEvent.winner) {
     throw new ApiError(403, 'Voting not closed yet')
   }
-  response.json(await getResults(settings))
+  response.json(await getResults(voteEvent))
 }
 
-export async function getResults(settings: Settings) {
-  const [votes, movies] = await Promise.all([votesByCurrentEvent(), getMovies()])
-
-  const moviesUnderVote = settings.runoffMovies.length ? movies.filter(({id}) => settings.runoffMovies.includes(id)) : movies
+export async function getResults(voteEvent: VoteEvent) {
+  const votes = await votesByCurrentEvent()
 
   const movieVotes: Record<SuggestedMovie['id'], VotingResult> = {}
-  for (const movie of moviesUnderVote) {
+  for (const movie of voteEvent.votingOptions) {
     movieVotes[movie.id] = {
       ...movie,
       votes: 0,
@@ -28,10 +29,9 @@ export async function getResults(settings: Settings) {
   }
 
   for (const vote of votes) {
-    const votedMovies = isRunoffVote(vote) ? [vote.movie] : vote.movies
-    for (const id of votedMovies) {
-      if (id in movieVotes) {
-        movieVotes[id].votes += 1
+    for (const movie of vote.movies) {
+      if (movie.id in movieVotes) {
+        movieVotes[movie.id].votes += 1
       }
     }
   }

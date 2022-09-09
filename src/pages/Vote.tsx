@@ -3,48 +3,33 @@ import { useCallback, useState } from 'react'
 import PageWrapper from '../components/PageWrapper'
 import { MovieCard } from '../components/MovieCard'
 import styled from '@emotion/styled'
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  Modal,
-  RadioGroup,
-  Typography,
-  useMediaQuery,
-  useTheme
-} from '@mui/material'
-import useGetMovies from '../components/useGetMovies'
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material'
 import api, { extractMessage } from '../components/api'
-import { SuggestedMovie } from '../../types/data'
+import { SuggestedMovie, VoteEvent } from '../../types/data'
 import { useSnackbar } from 'notistack'
 import { LoadingButton } from '@mui/lab'
-import { getPoster } from '../components/getPoster'
 
 interface VoteProps {
+  options: VoteEvent['votingOptions']
   isRunoff: boolean
   onVote: () => void
 }
 
-export default function Vote({onVote, isRunoff}: VoteProps) {
-  return isRunoff ? <SingleVote onSubmit={onVote}/> : <MultiVote onSubmit={onVote}/>
+export default function Vote({options, isRunoff, onVote}: VoteProps) {
+  return isRunoff ? <SingleVote options={options} onSubmit={onVote}/> : <MultiVote options={options} onSubmit={onVote}/>
 }
 
-function SingleVote({onSubmit}: { onSubmit: () => void }) {
+function SingleVote({options, onSubmit}: { options: VoteEvent['votingOptions'], onSubmit: () => void }) {
   const theme = useTheme()
   const mdDisplay = useMediaQuery(theme.breakpoints.up('md'))
   const {enqueueSnackbar} = useSnackbar()
-  const {movies} = useGetMovies()
   const [selectedMovie, setSelectedMovie] = useState<SuggestedMovie | null>(null)
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = useCallback(async () => {
     try {
       setLoading(true)
-      await api.post<null, null, { id: SuggestedMovie['id'] }>('/vote/runoff', {id: selectedMovie.id})
+      await api.post<null, null, { movieIds: SuggestedMovie['id'][] }>('/vote', {movieIds: [selectedMovie.id]})
       onSubmit()
     } catch (e) {
       setLoading(false)
@@ -77,7 +62,7 @@ function SingleVote({onSubmit}: { onSubmit: () => void }) {
 
       <StyledMovieListWrapper>
         {
-          movies?.map(movie => (
+          options.map(movie => (
             <MovieCard
               key={movie.id}
               checked={movie.id === selectedMovie?.id}
@@ -94,11 +79,10 @@ function SingleVote({onSubmit}: { onSubmit: () => void }) {
   )
 }
 
-function MultiVote({onSubmit}: { onSubmit: () => void }) {
+function MultiVote({options, onSubmit}: { options: VoteEvent['votingOptions'], onSubmit: () => void }) {
   const theme = useTheme()
   const mdDisplay = useMediaQuery(theme.breakpoints.up('md'))
   const {enqueueSnackbar} = useSnackbar()
-  const {movies} = useGetMovies()
   const [selectedMovies, setSelectedMovies] = useState<SuggestedMovie['id'][]>([])
   const [loading, setLoading] = useState(false)
 
@@ -141,7 +125,7 @@ function MultiVote({onSubmit}: { onSubmit: () => void }) {
 
       <StyledMovieListWrapper>
         {
-          movies?.map(movie => <MovieCard checked={selectedMovies.includes(movie.id)} key={movie.id} movie={movie} onClick={() => handleClick(movie.id)}/>)
+          options.map(movie => <MovieCard checked={selectedMovies.includes(movie.id)} key={movie.id} movie={movie} onClick={() => handleClick(movie.id)}/>)
           || <span>Loading movies...</span>
         }
       </StyledMovieListWrapper>

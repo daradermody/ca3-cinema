@@ -7,7 +7,11 @@ export default function ThanksForVoting() {
     <PageWrapper>
       <StyledThanksWrapper>
         <h2>Thanks for voting!</h2>
-        <h5><a href="https://www.youtube.com/watch?v=aRsWk4JZa5k" target="_blank">Have an egg</a></h5>
+        <h5>
+          <a href="https://www.webtoons.com/en/challenge/sonichu-/sonichu-0/viewer?title_no=676229&episode_no=1" target="_blank">
+            Electricity + speed =
+          </a>
+        </h5>
       </StyledThanksWrapper>
     </PageWrapper>
   )

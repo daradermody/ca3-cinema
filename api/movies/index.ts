@@ -1,4 +1,4 @@
-import { fauna, q } from '../_otherstff/faunaClient'
+import { fauna } from '../_otherstff/fauna/client'
 import getToken from '../_otherstff/getToken'
 import axios from 'axios'
 import { getUser, withAuth } from '../_otherstff/authentication'
@@ -6,6 +6,8 @@ import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
 import { withErrorHandling } from '../_otherstff/errorHandling'
 import { ApiError } from 'next/dist/server/api-utils'
 import { getMovies } from '../_otherstff/movies'
+import { SuggestedMovieCreation } from '../../types/data'
+import { createItem, Movies } from '../_otherstff/fauna/queries'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method === 'GET') {
@@ -31,22 +33,17 @@ async function addMovie(tmdbId: number, userDescription: string, username: strin
     throw new ApiError(409, 'Movie already added')
   }
 
-  await fauna.query(
-    q.Create(
-      q.Collection('Movies'),
-      {
-        data: {
-          tmdbId: tmdbResponse.data.id,
-          title: tmdbResponse.data.title,
-          overview: tmdbResponse.data.overview,
-          poster: tmdbResponse.data.poster_path,
-          year: Number(tmdbResponse.data.release_date?.split('-')?.[0]) || null,
-          suggester: username,
-          userDescription
-        }
-      }
-    )
-  )
+  const movie: SuggestedMovieCreation = {
+    tmdbId: tmdbResponse.data.id,
+    title: tmdbResponse.data.title,
+    overview: tmdbResponse.data.overview,
+    poster: tmdbResponse.data.poster_path,
+    year: Number(tmdbResponse.data.release_date?.split('-')?.[0]) || undefined,
+    suggester: username,
+    userDescription
+  }
+
+  await fauna.query(createItem(Movies, movie))
 }
 
 export default withAuth(withErrorHandling(handler))

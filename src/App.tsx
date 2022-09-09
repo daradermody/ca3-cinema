@@ -46,7 +46,8 @@ function App() {
         <UserInfoProvider>
           <main>
             <Switch>
-              <Route path="/">{<MainContent/>}</Route>
+              <Route path="/"><MainContent/></Route>
+              <Route path="/info/:id"><MainContent/></Route>
               <Route path="/login"><Login/></Route>
               <Route path="/joiningInstructions"><JoiningInstructions/></Route>
               <Route path="/secretAdminPage"><Admin/></Route>

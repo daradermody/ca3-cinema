@@ -1,11 +1,12 @@
 import { SuggestedMovie } from '../../types/data'
 import * as React from 'react'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import styled from '@emotion/styled'
 import { getPoster } from './getPoster'
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material'
 import Modal from './Modal'
 import { MovieInfo } from './MovieInfo'
+import { Link, Route, useLocation } from 'wouter'
 
 interface MovieCardProps {
   movie: SuggestedMovie
@@ -19,12 +20,12 @@ export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardP
   const theme = useTheme()
   theme.palette.augmentColor
   const mdDisplay = useMediaQuery(theme.breakpoints.up('md'))
-  const [showMoreInfo, setShowMoreInfo] = useState(false)
+  const [_, setLocation] = useLocation()
 
   const handleDelete = useCallback(() => {
-    setShowMoreInfo(false)
     onDelete()
-  }, [setShowMoreInfo, onDelete])
+    setLocation('/', {replace: true})
+  }, [setLocation, onDelete])
 
   return (
     <>
@@ -64,10 +65,9 @@ export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardP
           </CardContent>
           <Box sx={{display: 'flex', alignItems: 'center', pl: 1, pb: 1}}>
             <CardActions>
-              <Button onClick={e => {
-                e.stopPropagation()
-                setShowMoreInfo(true)
-              }}>More info</Button>
+              <Link href={`/info/${movie.id}`}>
+                <Button component="a">More info</Button>
+              </Link>
             </CardActions>
           </Box>
         </Box>
@@ -79,9 +79,11 @@ export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardP
         )}
       </Card>
 
-      <Modal open={showMoreInfo} onClose={() => setShowMoreInfo(false)}>
-        <MovieInfo movie={movie} onDelete={onDelete && handleDelete}/>
-      </Modal>
+      <Route path="/info/:id">
+        <Modal open onClose={() => setLocation('/', {replace: true})}>
+          <MovieInfo movie={movie} onDelete={onDelete && handleDelete}/>
+        </Modal>
+      </Route>
     </>
   )
 }

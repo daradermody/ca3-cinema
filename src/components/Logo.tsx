@@ -17,7 +17,7 @@ export default function Logo(props: ImgHTMLAttributes<HTMLImageElement>) {
 
   return (
     <img
-      src={showOldLogo ? 'assets/drawn_logo.png' : 'assets/logo.svg'}
+      src={showOldLogo ? '/assets/drawn_logo.png' : '/assets/logo.svg'}
       draggable="false"
       alt="logo"
       onMouseEnter={handleMouseEnter}

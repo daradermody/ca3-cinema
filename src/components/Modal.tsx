@@ -36,7 +36,12 @@ const StyledModalBody = styled.div`
 `
 
 const StyledCloseButton = styled(IconButton)`
+  background-color: inherit;
   position: fixed;
-  right: 40px;
+  right: 10vw;
   top: 40px;
+
+  @media screen and (min-width: 900px) {
+    right: 40px;
+  }
 `

@@ -30,7 +30,7 @@ export function MovieInfo({movie, onDelete}: { movie: SuggestedMovie; onDelete?:
     <StyledMovieInfo>
       <StyledPoster src={getPoster(movie.poster)} alt={`${movie.title} poster`}/>
       <Box sx={{overflowX: 'hidden'}}>
-        <Typography variant="h5">{movie.title}</Typography>
+        <Typography variant="h5" mr="30px">{movie.title}</Typography>
         {movie.year && <Typography variant="subtitle1" color="text.secondary">({movie.year})</Typography>}
         <Box sx={{mt: 1}}>{movie.overview}</Box>
         <UserDescription username={movie.suggester} description={movie.userDescription}/>

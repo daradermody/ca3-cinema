@@ -60,7 +60,7 @@ export const updateItem = (ref: Expr, data: ExprArg) => Update(ref, {data})
 
 export const indexItems = (name: string, scope: ExprArg) => Select(['data'], Map(Paginate(Match(Index(name), scope)), obj => flatten(Get(obj))))
 
-export const settingsRef = ref(Settings, '342171011499688139')
+export const settingsRef = ref(Settings, '338523062048653515')
 
 export const settings = flatten(Get(settingsRef))
 

@@ -38,8 +38,8 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
   const updatedEvent: VoteEventCreation = {
     name: activeEvent.name,
     votingOptions: activeEvent.votingOptions.map(option => ref(Movies, option.id)),
-    showingTime: activeEvent.showingTime,
-    downloadLink: activeEvent.showingTime,
+    showingTime: showingTime.toISOTime(),
+    downloadLink: request.body.downloadLink,
     runoffOf: activeEvent.runoffOf?.id ? ref(VoteEvents, activeEvent.runoffOf.id) : undefined,
     winner: ref(Movies, movieId),
   }

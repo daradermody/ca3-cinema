@@ -3,7 +3,21 @@ import { useCallback, useEffect, useState } from 'react'
 import PageWrapper from '../components/PageWrapper'
 import { useIsAdmin } from '../components/UserInfoContext'
 import { useLocation } from 'wouter'
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography
+} from '@mui/material'
 import { SuggestedMovie, Vote, VoteEvent, VotingResult } from '../../types/data'
 import api, { extractMessage } from '../components/api'
 import PageLoading from '../components/PageLoading'
@@ -190,13 +204,12 @@ function StopVoting({results, isRunoff, onSubmit}: { results: VotingResult[], is
         <DialogTitle>Confirm winner</DialogTitle>
         <DialogContent dividers>
           {winningMovies.length > 1 && (
-            <ul>
-              {winningMovies.map(movie => (
-                <li key={movie.id} onClick={() => setChosenWinner(movie.id)} style={{ cursor: 'pointer', fontWeight: chosenWinner === movie.id ? 'bold' : 'normal'}}>
-                  {movie.title} {chosenWinner === movie.id && '☑'}
-                </li>
-              ))}
-            </ul>
+            <FormControl sx={{ mb: 4 }}>
+              <FormLabel>Winner</FormLabel>
+              <RadioGroup defaultValue={winningMovies[0].id} value={chosenWinner} onChange={e => setChosenWinner(e.target.value)}>
+                {winningMovies.map(movie => <FormControlLabel key={movie.id} value={movie.id} control={<Radio/>} label={movie.title}/>)}
+              </RadioGroup>
+            </FormControl>
           )}
           {winningMovies.length === 1 && <Typography variant="h6" sx={{mb: 2}}>Winner: {winningMovies[0].title}</Typography>}
 
@@ -208,8 +221,9 @@ function StopVoting({results, isRunoff, onSubmit}: { results: VotingResult[], is
             onChange={e => setShowingTime(e.target.value)}
             variant="outlined"
             helperText={DateTime.fromISO(showingTime).toFormat('t, ccc d LLL')}
+            sx={{mb: 1}}
           />
-          <TextField sx={{mt: 1}} fullWidth value={downloadLink} required onChange={e => setDownloadLink(e.target.value)} label="Download link" variant="outlined"/>
+          <TextField fullWidth value={downloadLink} required onChange={e => setDownloadLink(e.target.value)} label="Download link" variant="outlined"/>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={() => setShowWinnerModal(false)}>Cancel</Button>

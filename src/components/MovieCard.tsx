@@ -79,7 +79,7 @@ export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardP
         )}
       </Card>
 
-      <Route path="/info/:id">
+      <Route path={`/info/${movie.id}`}>
         <Modal open onClose={() => setLocation('/', {replace: true})}>
           <MovieInfo movie={movie} onDelete={onDelete && handleDelete}/>
         </Modal>

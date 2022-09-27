@@ -4,6 +4,7 @@ import styled from '@emotion/styled'
 import Logo from './Logo'
 import { UserInfoContext } from './UserInfoContext'
 import { Box, Menu, MenuItem } from '@mui/material'
+import { Link } from 'wouter'
 
 export default function PageWrapper({hideHeader, children}: { hideHeader?: boolean, children?: ReactNode }) {
   const {user, setUser} = useContext(UserInfoContext)
@@ -15,15 +16,17 @@ export default function PageWrapper({hideHeader, children}: { hideHeader?: boole
         <>
           <StyledHeader>
             <Box mt="5px" ml="10px">
-              <Logo/>
+              <Link href="/">
+                <a><Logo/></a>
+              </Link>
             </Box>
             <StyledProfilePhoto draggable="false" src={user.photo} alt="user photo" onClick={e => setProfileAnchorEl(e.currentTarget)}/>
             <Menu
               anchorEl={profileAnchorEl}
               open={!!profileAnchorEl}
               onClose={() => setProfileAnchorEl(null)}
-              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              transformOrigin={{horizontal: 'right', vertical: 'top'}}
+              anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
             >
               <MenuItem onClick={() => setUser(null)}>Logout</MenuItem>
             </Menu>

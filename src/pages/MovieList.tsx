@@ -28,6 +28,7 @@ export default function MovieList() {
 const StyledMovieListWrapper = styled.div`
   display: grid;
   gap: 20px;
+  grid-template-columns: 1fr;
   @media screen and (min-width: 900px) {
     grid-template-columns: 1fr 1fr;
   }

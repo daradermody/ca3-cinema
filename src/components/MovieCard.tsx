@@ -65,7 +65,7 @@ export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardP
           </CardContent>
           <Box sx={{display: 'flex', alignItems: 'center', pl: 1, pb: 1}}>
             <CardActions>
-              <Link href={`/info/${movie.id}`}>
+              <Link href={`/info/${movie.id}`} onClick={e => e.stopPropagation()}>
                 <Button component="a">More info</Button>
               </Link>
             </CardActions>

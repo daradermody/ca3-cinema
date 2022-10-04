@@ -1,4 +1,8 @@
 {
-  "rewrites": [{ "source": "/((?!api\\/.*).*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/overdb", "destination": "http://109.255.6.10:3000/" },
+    { "source": "/overdb/:path(.*)", "destination": "http://109.255.6.10:3000/:path" },
+    { "source": "/((?!api\\/.*).*)", "destination": "/index.html" }
+  ]
 }
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "concurrently 'vercel dev' 'nodemon --watch src --watch public --ext ts,tsx --exec yarn build:dev'",
+    "start": "concurrently --kill-others 'vercel dev' 'nodemon --watch src --watch public --ext ts,tsx --exec yarn build:dev'",
     "build:dev": "esbuild --bundle src/App.tsx --outdir=build/static --loader:.svg=file --loader:.js=jsx --sourcemap && cp -r public/* build && cp -r src/assets build",
     "build": "esbuild --bundle src/App.tsx --outdir=build/static --loader:.svg=file --loader:.js=jsx --minify && cp -r public/* build && cp -r src/assets build",
     "deploy": "yarn build && vercel deploy"

@@ -55,7 +55,7 @@ export default function Admin() {
   })
 
   if (!votes || activeVoteEvent === undefined || !results) {
-    return <PageLoading/>
+    return <PageWrapper><PageLoading/></PageWrapper>;
   }
 
   if (!activeVoteEvent) {

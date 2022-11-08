@@ -14,9 +14,10 @@ interface MovieCardProps {
   onDelete?: () => void
   checked?: boolean
   votes?: number
+  disableMoreInfo?: boolean
 }
 
-export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardProps) {
+export function MovieCard({movie, onClick, onDelete, checked, votes, disableMoreInfo}: MovieCardProps) {
   const theme = useTheme()
   theme.palette.augmentColor
   const mdDisplay = useMediaQuery(theme.breakpoints.up('md'))
@@ -36,7 +37,7 @@ export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardP
           userSelect: 'none',
           border: checked ? `2px solid ${theme.palette.primary.main}` : 'none',
           margin: checked ? 0 : '2px',
-          alignSelf: 'stretch',
+          flexGrow: 1,
           position: 'relative',
         }}
         onClick={onClick}
@@ -49,8 +50,8 @@ export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardP
           alt={`Poster for ${movie.title}`}
         />
         {checked && <StyledCheckmark/>}
-        <Box sx={{overflow: 'hidden', flexGrow: 1, backgroundColor: checked ? theme.palette.action.selected : 'transparent'}}>
-          <CardContent sx={{flex: '1 0 auto'}}>
+        <StyledCardText selected={checked}>
+          <CardContent sx={{display: 'flex', flexDirection: 'column'}}>
             <Box sx={{display: 'flex', gap: 1}}>
               <Tooltip title={movie.title} placement="top" enterDelay={500}>
                 <Typography variant="h6" sx={{overflowX: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
@@ -63,14 +64,14 @@ export function MovieCard({movie, onClick, onDelete, checked, votes}: MovieCardP
               Suggested by {movie.suggester}
             </Typography>
           </CardContent>
-          <Box sx={{display: 'flex', alignItems: 'center', pl: 1, pb: 1}}>
+          <Box sx={{display: disableMoreInfo ? 'none' : 'flex', alignItems: 'center', pl: 1, pb: 1}}>
             <CardActions>
               <Link href={`/info/${movie.id}`} onClick={e => e.stopPropagation()}>
                 <Button component="a">More info</Button>
               </Link>
             </CardActions>
           </Box>
-        </Box>
+        </StyledCardText>
         {votes !== undefined && (
           <StyledVotes>
             <Box sx={{fontSize: '2rem'}}>{votes}</Box>
@@ -102,4 +103,13 @@ const StyledCheckmark = styled.div`
   position: absolute;
   height: 100%;
   width: 100px;
+`
+
+const StyledCardText = styled.div<{ selected: boolean }>`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  flex-grow: 1;
+  background-color: ${({theme, selected}) => selected ? theme.palette.action.selected : 'transparent'};
 `

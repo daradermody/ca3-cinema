@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
-import { useLocation } from 'wouter'
+import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react'
+import {useLocation} from 'wouter'
 import * as queryString from 'query-string'
 import * as cookie from 'cookie'
-import { Person } from '../../types/data'
+import {Person} from '../../types/data'
 import PageLoading from './PageLoading'
 
 export const UserInfoContext = createContext<{ user: Person, setUser: (user: Person) => void }>(null)

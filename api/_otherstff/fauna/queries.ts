@@ -5,12 +5,16 @@ import {
   ContainsField,
   Create,
   Delete,
-  Documents,
+  Documents, Exists,
   ExprArg,
+  Filter,
   Get,
   If,
   Index,
+  Intersection,
   IsArray,
+  IsNonEmpty,
+  Let,
   Map,
   Match,
   Merge,
@@ -18,7 +22,8 @@ import {
   Paginate,
   Ref,
   Select,
-  Update
+  Update,
+  Var
 } from 'faunadb'
 import Expr from 'faunadb/src/types/Expr'
 
@@ -27,6 +32,8 @@ export const Movies = 'Movies'
 export const Settings = 'Settings'
 export const VoteEvents = 'Events'
 
+const Contains = (set: Expr, item: Expr) => IsNonEmpty(Intersection(set, [item]))
+
 const resolve = (doc: Expr, field: string) => {
   return If(
     ContainsField(field, doc),
@@ -34,9 +41,13 @@ const resolve = (doc: Expr, field: string) => {
       IsArray(getField(doc, field)),
       Map(
         getField(doc, field),
-        ref => flatten(Get(ref))
+        ref => If(Exists(ref), flatten(Get(ref)), null)
       ),
-      flatten(Get(getField(doc, field)))
+      If(
+        Exists(getField(doc, field)),
+        flatten(Get(getField(doc, field))),
+        null
+      )
     ),
     null
   )
@@ -80,6 +91,17 @@ export const resolvedActiveVotingEvent = If(
   null
 )
 
+export const votingEvents = collectionItems(VoteEvents)
+
+export const resolvedVotingEvents = Map(
+  votingEvents,
+  event => Merge(event, {
+    winner: resolve(event, 'winner'),
+    runoffOf: resolve(event, 'runoffOf'),
+    votingOptions: resolve(event, 'votingOptions'),
+  })
+)
+
 export const votesForActiveEvent = If(
   votingEventActive,
   Map(
@@ -99,3 +121,19 @@ const resultIn = ContainsField('winner', activeVotingEventRef)
 export const votingIsOpen = And(votingEventActive, Not(resultIn))
 
 export const votingOptions = resolve(activeVotingEvent, 'votingOptions')
+
+export const watchedMovieRefs = Map(
+  Filter(collectionItems(VoteEvents), event => ContainsField('winner', event)),
+  event => Select(['winner'], event)
+)
+
+export const unwatchedMovies = Let(
+  {watchedMovies: watchedMovieRefs},
+  Map(
+    Filter(
+      collectionRefs(Movies),
+      movie => Not(Contains(Var('watchedMovies'), movie))
+    ),
+    movie => flatten(Get(movie))
+  )
+)

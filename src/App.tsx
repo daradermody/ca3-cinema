@@ -16,6 +16,8 @@ import Admin from './pages/Admin'
 import JoiningInstructions from './pages/JoiningInstructions'
 import Logo from './components/Logo'
 import { VoteEvent } from '../types/data'
+import PastEvents from './pages/PastEvents';
+import PageWrapper from './components/PageWrapper';
 
 const theme = createTheme({
   palette: {
@@ -49,6 +51,7 @@ function App() {
               <Route path="/"><MainContent/></Route>
               <Route path="/info/:id"><MainContent/></Route>
               <Route path="/login"><Login/></Route>
+              <Route path="/pastEvents"><PastEvents/></Route>
               <Route path="/joiningInstructions"><JoiningInstructions/></Route>
               <Route path="/secretAdminPage"><Admin/></Route>
               <Route><strong>404</strong></Route>
@@ -61,13 +64,8 @@ function App() {
 }
 
 function MainContent() {
-  const [downForMaintenance, setDownForMaintenance] = useState<boolean>()
   const [activeEvent, setActiveEvent] = useState<VoteEvent>()
   const [voted, setVoted] = useState<boolean>()
-
-  useEffect(() => {
-    api.get<boolean>('/maintenance').then(({data}) => setDownForMaintenance(data))
-  }, [setDownForMaintenance])
 
   useEffect(() => {
     api.get<VoteEvent>('/vote').then(({data}) => setActiveEvent(data))
@@ -77,12 +75,8 @@ function MainContent() {
     api.get('/vote/voted').then(({data}) => setVoted(data))
   }, [setVoted])
 
-  if (downForMaintenance) {
-    return <DownForMaintenance/>
-  }
-
-  if (downForMaintenance === undefined || voted === undefined || activeEvent === undefined) {
-    return <PageLoading/>
+  if (voted === undefined || activeEvent === undefined) {
+    return <PageWrapper><PageLoading/></PageWrapper>;
   }
 
   if (!activeEvent) {
@@ -94,15 +88,6 @@ function MainContent() {
   } else {
     return <Vote options={activeEvent.votingOptions} isRunoff={!!activeEvent.runoffOf} onVote={() => setVoted(true)}/>
   }
-}
-
-function DownForMaintenance() {
-  return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
-      <Logo height="300px"/>
-      <Typography variant="h1" sx={{mt: 4, mb: 10, textAlign: 'center'}}>Down for maintenance!</Typography>
-    </Box>
-  )
 }
 
 createRoot(document.getElementById('root')).render(<App/>)

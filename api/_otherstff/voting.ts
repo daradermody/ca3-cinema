@@ -1,6 +1,14 @@
-import { fauna } from './fauna/client'
-import { Person, Settings, SettingsCreation, Vote, VoteEvent } from '../../types/data'
-import { resolvedActiveVotingEvent, settings, settingsRef, updateItem, votesForActiveEvent, votingIsOpen } from './fauna/queries'
+import {fauna} from './fauna/client'
+import {Person, Settings, SettingsCreation, Vote, VoteEvent} from '../../types/data'
+import {
+  resolvedActiveVotingEvent,
+  resolvedVotingEvents,
+  settings,
+  settingsRef,
+  updateItem,
+  votesForActiveEvent,
+  votingIsOpen
+} from './fauna/queries'
 
 export async function hasVoted(username: Person['username']): Promise<boolean> {
   const votes = await votesByCurrentEvent()
@@ -9,6 +17,10 @@ export async function hasVoted(username: Person['username']): Promise<boolean> {
 
 export async function getActiveEvent(): Promise<VoteEvent | null> {
   return fauna.query(resolvedActiveVotingEvent)
+}
+
+export async function getAllEvents(): Promise<VoteEvent[]> {
+  return fauna.query(resolvedVotingEvents)
 }
 
 export async function votesByCurrentEvent(): Promise<Vote[]> {

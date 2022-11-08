@@ -15,8 +15,8 @@ export default function PageLoading() {
 }
 
 const StyledLoadingWrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: calc(100vh - 130px);
   display: flex;
   justify-content: center;
   align-items: center;

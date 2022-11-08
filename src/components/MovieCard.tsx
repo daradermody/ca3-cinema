@@ -1,12 +1,23 @@
-import { SuggestedMovie } from '../../types/data'
+import {SuggestedMovie} from '../../types/data'
 import * as React from 'react'
-import { useCallback } from 'react'
+import {useCallback} from 'react'
 import styled from '@emotion/styled'
-import { getPoster } from './getPoster'
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material'
+import {getPoster} from './getPoster'
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@mui/material'
 import Modal from './Modal'
-import { MovieInfo } from './MovieInfo'
-import { Link, Route, useLocation } from 'wouter'
+import {MovieInfo} from './MovieInfo'
+import {Link, Route, useLocation} from 'wouter'
 
 interface MovieCardProps {
   movie: SuggestedMovie
@@ -30,18 +41,7 @@ export function MovieCard({movie, onClick, onDelete, checked, votes, disableMore
 
   return (
     <>
-      <Card
-        sx={{
-          display: 'flex',
-          cursor: onClick ? 'pointer' : null,
-          userSelect: 'none',
-          border: checked ? `2px solid ${theme.palette.primary.main}` : 'none',
-          margin: checked ? 0 : '2px',
-          flexGrow: 1,
-          position: 'relative',
-        }}
-        onClick={onClick}
-      >
+      <StyledCard selected={checked} onClick={onClick}>
         <CardMedia
           draggable="false"
           sx={{width: 100}}
@@ -78,7 +78,7 @@ export function MovieCard({movie, onClick, onDelete, checked, votes, disableMore
             <div>Vote{votes !== 1 && 's'}</div>
           </StyledVotes>
         )}
-      </Card>
+      </StyledCard>
 
       <Route path={`/info/${movie.id}`}>
         <Modal open onClose={() => setLocation('/', {replace: true})}>
@@ -88,6 +88,17 @@ export function MovieCard({movie, onClick, onDelete, checked, votes, disableMore
     </>
   )
 }
+
+const StyledCard = styled(Card)<{ selected?: boolean }>`
+  display: flex;
+  cursor: ${({onClick}) => onClick ? 'pointer' : null};
+  user-select: none;
+  border: ${({selected, theme}) => selected ? `2px solid ${theme.palette.primary.main}` : 'none'};
+  margin: ${({selected}) => selected ? '0' : '2px'};
+  flex-grow: 1;
+  position: relative;
+  max-width: 100%;
+`
 
 const StyledVotes = styled.div`
   width: 62px;

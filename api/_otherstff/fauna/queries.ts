@@ -59,9 +59,15 @@ const flatten = (doc: Expr) => Call('flatten', doc)
 
 export const ref = (collection: string, id: string) => Ref(Collection(collection), id)
 
-export const collectionItems = (name: string) => Select(['data'], Map(Paginate(Documents(Collection(name))), obj => flatten(Get(obj))))
+export const collectionItems = (name: string) => Select(
+  ['data'],
+  Map(
+    Paginate(Documents(Collection(name)), { size: 1000 }),
+    obj => flatten(Get(obj))
+  )
+)
 
-export const collectionRefs = (name: string) => Select(['data'], Paginate(Documents(Collection(name))))
+export const collectionRefs = (name: string) => Select(['data'], Paginate(Documents(Collection(name)), { size: 1000 }))
 
 export const createItem = (collection: string, data: ExprArg) => Create(Collection(collection), {data})
 
@@ -69,7 +75,7 @@ export const deleteItem = (collection: string, id: string) => Delete(ref(collect
 
 export const updateItem = (ref: Expr, data: ExprArg) => Update(ref, {data})
 
-export const indexItems = (name: string, scope: ExprArg) => Select(['data'], Map(Paginate(Match(Index(name), scope)), obj => flatten(Get(obj))))
+export const indexItems = (name: string, scope: ExprArg) => Select(['data'], Map(Paginate(Match(Index(name), scope), { size: 1000 }), obj => flatten(Get(obj))))
 
 export const settingsRef = ref(Settings, process.env.SETTINGS_REF as string)
 

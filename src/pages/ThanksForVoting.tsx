@@ -8,8 +8,8 @@ export default function ThanksForVoting() {
       <StyledThanksWrapper>
         <h2>Thanks for voting!</h2>
         <h5>
-          <a href="https://www.webtoons.com/en/challenge/sonichu-/sonichu-0/viewer?title_no=676229&episode_no=1" target="_blank">
-            Electricity + speed =
+          <a href="https://www.wikihow.com/Stop-an-Adult-Disposable-Diaper-Addiction" target="_blank">
+            It's a serious problem
           </a>
         </h5>
       </StyledThanksWrapper>

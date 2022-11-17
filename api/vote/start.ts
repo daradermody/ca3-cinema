@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
-import { ApiError } from 'next/dist/server/api-utils'
-import { withAdminAuth } from '../_otherstff/authentication'
-import { withErrorHandling } from '../_otherstff/errorHandling'
-import { getSettings, updateSettings } from '../_otherstff/voting'
-import { fauna } from '../_otherstff/fauna/client'
-import { Expr } from 'faunadb'
-import { collectionRefs, createItem, Movies, VoteEvents } from '../_otherstff/fauna/queries'
-import { VoteEventCreation } from '../../types/data'
+import {NextApiRequest, NextApiResponse} from 'next/dist/shared/lib/utils'
+import {ApiError} from 'next/dist/server/api-utils'
+import {withAdminAuth} from '../_otherstff/authentication'
+import {withErrorHandling} from '../_otherstff/errorHandling'
+import {getSettings, updateSettings} from '../_otherstff/voting'
+import {fauna} from '../_otherstff/fauna/client'
+import {Expr} from 'faunadb'
+import {createItem, unwatchedMovieRefs, VoteEvents} from '../_otherstff/fauna/queries'
+import {VoteEventCreation} from '../../types/data'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method !== 'POST') {
@@ -23,7 +23,7 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
 
   const voteEvent: VoteEventCreation = {
     name: request.body.name.trim(),
-    votingOptions: await fauna.query(collectionRefs(Movies)),
+    votingOptions: await fauna.query(unwatchedMovieRefs),
   }
   const {ref} = await fauna.query<{ ref: Expr }>(createItem(VoteEvents, voteEvent))
 

@@ -133,13 +133,12 @@ export const watchedMovieRefs = Map(
   event => Select(['winner'], event)
 )
 
-export const unwatchedMovies = Let(
+export const unwatchedMovieRefs = Let(
   {watchedMovies: watchedMovieRefs},
-  Map(
-    Filter(
-      collectionRefs(Movies),
-      movie => Not(Contains(Var('watchedMovies'), movie))
-    ),
-    movie => flatten(Get(movie))
+  Filter(
+    collectionRefs(Movies),
+    movie => Not(Contains(Var('watchedMovies'), movie))
   )
 )
+
+export const unwatchedMovies = Map(unwatchedMovieRefs, movie => flatten(Get(movie)))

@@ -8,8 +8,8 @@ export default function ThanksForVoting() {
       <StyledThanksWrapper>
         <h2>Thanks for voting!</h2>
         <h5>
-          <a href="https://www.wikihow.com/Speak-With-an-Irish-Accent" target="_blank">
-            For the Brits in the audience
+          <a href="https://www.youtube.com/watch?v=QDogh7J1-5s" target="_blank">
+            Kids were more hip in those days
           </a>
         </h5>
       </StyledThanksWrapper>

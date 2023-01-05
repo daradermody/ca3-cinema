@@ -8,8 +8,8 @@ export default function ThanksForVoting() {
       <StyledThanksWrapper>
         <h2>Thanks for voting!</h2>
         <h5>
-          <a href="https://www.youtube.com/watch?v=QDogh7J1-5s" target="_blank">
-            Kids were more hip in those days
+          <a href="https://youtu.be/kMQ3jwqH_lU?t=86" target="_blank">
+            DO YOU EVEN KNOW THESE GET UPDATED NOW!?
           </a>
         </h5>
       </StyledThanksWrapper>

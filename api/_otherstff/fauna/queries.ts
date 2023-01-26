@@ -5,7 +5,8 @@ import {
   ContainsField,
   Create,
   Delete,
-  Documents, Exists,
+  Documents,
+  Exists,
   ExprArg,
   Filter,
   Get,
@@ -15,6 +16,7 @@ import {
   IsArray,
   IsNonEmpty,
   Let,
+  LTE,
   Map,
   Match,
   Merge,
@@ -26,6 +28,8 @@ import {
   Var
 } from 'faunadb'
 import Expr from 'faunadb/src/types/Expr'
+import {DateTime} from 'luxon'
+import {DurationLike} from 'luxon/src/duration'
 
 export const Votes = 'Votes'
 export const Movies = 'Movies'
@@ -62,12 +66,12 @@ export const ref = (collection: string, id: string) => Ref(Collection(collection
 export const collectionItems = (name: string) => Select(
   ['data'],
   Map(
-    Paginate(Documents(Collection(name)), { size: 1000 }),
+    Paginate(Documents(Collection(name)), {size: 1000}),
     obj => flatten(Get(obj))
   )
 )
 
-export const collectionRefs = (name: string) => Select(['data'], Paginate(Documents(Collection(name)), { size: 1000 }))
+export const collectionRefs = (name: string) => Select(['data'], Paginate(Documents(Collection(name)), {size: 1000}))
 
 export const createItem = (collection: string, data: ExprArg) => Create(Collection(collection), {data})
 
@@ -75,7 +79,13 @@ export const deleteItem = (collection: string, id: string) => Delete(ref(collect
 
 export const updateItem = (ref: Expr, data: ExprArg) => Update(ref, {data})
 
-export const indexItems = (name: string, scope: ExprArg) => Select(['data'], Map(Paginate(Match(Index(name), scope), { size: 1000 }), obj => flatten(Get(obj))))
+export const indexItems = (name: string, scopes: ExprArg[]) => Select(
+  ['data'],
+  Map(
+    Paginate(Match(Index(name), ...scopes), {size: 1000}),
+    obj => flatten(Get(obj))
+  )
+)
 
 export const settingsRef = ref(Settings, process.env.SETTINGS_REF as string)
 
@@ -108,19 +118,18 @@ export const resolvedVotingEvents = Map(
   })
 )
 
-export const votesForActiveEvent = If(
-  votingEventActive,
-  Map(
-    indexItems('votes_by_event', activeVotingEventRef),
-    vote => Merge(
-      vote,
-      {
-        movies: resolve(vote, 'movies')
-      }
-    )
-  ),
-  []
+export const votesForEvent = (ref: ExprArg) => Map(
+  indexItems('votes_by_event', [ref]),
+  vote => Merge(
+    vote,
+    {
+      movies: resolve(vote, 'movies')
+    }
+  )
 )
+
+
+export const votesForActiveEvent = If(votingEventActive, votesForEvent(activeVotingEventRef), [])
 
 const resultIn = ContainsField('winner', activeVotingEventRef)
 
@@ -142,3 +151,13 @@ export const unwatchedMovieRefs = Let(
 )
 
 export const unwatchedMovies = Map(unwatchedMovieRefs, movie => flatten(Get(movie)))
+
+
+export const olderUnwatchedMoves = (before: DurationLike) => Map(
+  Filter(
+    unwatchedMovieRefs,
+    ref => LTE(getField(Get(ref), 'ts'), DateTime.now().minus(before).toMillis() * 1000)
+  ),
+  ref => flatten(Get(ref))
+)
+

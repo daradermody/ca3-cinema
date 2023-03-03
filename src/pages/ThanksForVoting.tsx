@@ -8,8 +8,8 @@ export default function ThanksForVoting() {
       <StyledThanksWrapper>
         <h2>Thanks for voting!</h2>
         <h5>
-          <a href="https://www.wikihow.com/Appreciate-Speaking-in-Tongues" target="_blank">
-            Don't forget to bring your best tongue!
+          <a href="https://www.youtube.com/watch?v=0QLliDMqHcw" target="_blank">
+            Appreciation!
           </a>
         </h5>
       </StyledThanksWrapper>

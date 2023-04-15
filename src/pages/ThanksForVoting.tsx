@@ -8,8 +8,8 @@ export default function ThanksForVoting() {
       <StyledThanksWrapper>
         <h2>Thanks for voting!</h2>
         <h5>
-          <a href="https://youtu.be/n7PEMGuA6tw?t=23" target="_blank">
-            When you're feeling like you need a "you" day
+          <a href="https://sugardaddyy.com/guide/sugar-baby-tips-for-beginners#content-wrapper" target="_blank">
+            Find your new daddy
           </a>
         </h5>
       </StyledThanksWrapper>

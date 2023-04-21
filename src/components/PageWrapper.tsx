@@ -35,6 +35,11 @@ export default function PageWrapper({hideHeader, children}: { hideHeader?: boole
                 transformOrigin={{horizontal: 'right', vertical: 'top'}}
                 anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
               >
+                {user.username === 'Dara' && (
+                  <MenuItem>
+                    <Link href="/admin" style={{textDecoration: 'none', color: 'inherit'}}>Admin</Link>
+                  </MenuItem>
+                )}
                 <MenuItem onClick={() => setUser(null)}>Logout</MenuItem>
               </Menu>
             </Box>

@@ -53,7 +53,7 @@ function App() {
               <Route path="/login"><Login/></Route>
               <Route path="/pastEvents"><PastEvents/></Route>
               <Route path="/joiningInstructions"><JoiningInstructions/></Route>
-              <Route path="/secretAdminPage"><Admin/></Route>
+              <Route path="/admin"><Admin/></Route>
               <Route><strong>404</strong></Route>
             </Switch>
           </main>

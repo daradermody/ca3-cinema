@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import PageWrapper from '../components/PageWrapper'
-import { useIsAdmin } from '../components/UserInfoContext'
+import { useAdmin } from '../components/UserInfoContext'
 import { useLocation } from 'wouter'
 import {
   Box,
@@ -26,7 +26,7 @@ import { useSnackbar } from 'notistack'
 import { DateTime } from 'luxon'
 
 export default function Admin() {
-  const isAdmin = useIsAdmin()
+  const {isAdmin} = useAdmin()
   const [_, setLocation] = useLocation()
   const [activeVoteEvent, setActiveVoteEvent] = useState<VoteEvent | null>()
   const [votes, setVotes] = useState<Vote[]>()
@@ -48,11 +48,9 @@ export default function Admin() {
     }
   }, [activeVoteEvent, setVotes])
 
-  useEffect(() => {
-    if (!isAdmin) {
-      setLocation(`/`)
-    }
-  })
+  if (!isAdmin) {
+    return <PageWrapper><AdminLogin/></PageWrapper>
+  }
 
   if (!votes || activeVoteEvent === undefined || !results) {
     return <PageWrapper><PageLoading/></PageWrapper>;
@@ -88,6 +86,44 @@ export default function Admin() {
 
       <AdminActions voteEvent={activeVoteEvent} results={results}/>
     </PageWrapper>
+  )
+}
+
+function AdminLogin() {
+  const {setAdminPassword} = useAdmin()
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const {enqueueSnackbar} = useSnackbar()
+
+  const handleClick = useCallback(async () => {
+    setLoading(true)
+    try {
+      await api.post('/people', {password})
+      setAdminPassword(password)
+      location.reload()
+    } catch (e) {
+      if (e.response?.status === 401) {
+        enqueueSnackbar(`Password incorrect`, {variant: 'error'})
+      } else {
+        enqueueSnackbar(`Something went wrong: ${extractMessage(e)}`, {variant: 'error'})
+      }
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
+  }, [password, setLoading, setAdminPassword])
+
+  return (
+    <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" gap="10px" height="calc(100vh - 130px)">
+      <TextField
+        label="Admin password"
+        type="password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        onKeyDown={e => e.key === 'Enter' && handleClick()}
+      />
+      <LoadingButton variant="contained" onClick={handleClick} loading={loading}>Login</LoadingButton>
+    </Box>
   )
 }
 

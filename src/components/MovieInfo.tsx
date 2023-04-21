@@ -1,7 +1,7 @@
 import { SuggestedMovie } from '../../types/data'
 import * as React from 'react'
 import { useCallback, useState } from 'react'
-import { useIsAdmin } from './UserInfoContext'
+import { useAdmin } from './UserInfoContext'
 import DeleteIcon from '@mui/icons-material/Delete'
 import styled from '@emotion/styled'
 import api, { extractMessage } from './api'
@@ -11,7 +11,7 @@ import { getPoster } from './getPoster'
 import { Box, Typography } from '@mui/material'
 
 export function MovieInfo({movie, onDelete}: { movie: SuggestedMovie; onDelete?: () => void }) {
-  const isAdmin = useIsAdmin()
+  const {isAdmin} = useAdmin()
   const [deleting, setDeleting] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
 

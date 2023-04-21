@@ -1,8 +1,12 @@
 import axios, { AxiosError } from 'axios'
+import * as cookie from 'cookie'
 
 const api = axios.create({
   baseURL: '/api',
-  headers: {'Accept': 'application/json'}
+  headers: {
+    'Accept': 'application/json',
+    'X-Admin-Password':  cookie.parse(document.cookie).adminPassword
+  }
 });
 
 export function extractMessage(e: Error | AxiosError<any>): string {

@@ -1,6 +1,6 @@
 import { fauna } from '../_otherstff/fauna/client'
 import { Person, SuggestedMovie, VoteCreation, VoteEvent } from '../../types/data'
-import { getUser, withAuth } from '../_otherstff/authentication'
+import {getUser, hasAdminAuth, withAuth} from '../_otherstff/authentication'
 import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
 import { withErrorHandling } from '../_otherstff/errorHandling'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -14,6 +14,9 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
     await handleVoteSubmission(request)
     response.status(200).end()
   } else if (request.method === 'DELETE') {
+    if (!hasAdminAuth(request)) {
+      return response.status(401).end()
+    }
     await finishEvent()
     response.status(200).end()
   } else {

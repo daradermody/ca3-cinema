@@ -23,13 +23,14 @@ export function UserInfoProvider({children}: { children: ReactNode }) {
 
   const handleSetUser = useCallback((newUser: Person) => {
     if (newUser) {
-      document.cookie = cookie.serialize('user', JSON.stringify(newUser), {sameSite: 'strict'})
+      document.cookie = cookie.serialize('user', JSON.stringify(newUser), {sameSite: 'strict', secure: true, maxAge: 999999})
       setUser(newUser)
       let returnPath = queryString.parse(window.location.search).andWeWillGetYouTo as string
       returnPath = !returnPath || returnPath === '/login' ? '/' : returnPath
       setLocation(returnPath)
     } else {
       document.cookie = cookie.serialize('user', null, {maxAge: 0})
+      document.cookie = cookie.serialize('adminPassword', null, {maxAge: 0})
       setUser(null)
       setLocation('/login')
     }
@@ -46,7 +47,17 @@ export function UserInfoProvider({children}: { children: ReactNode }) {
   }
 }
 
-export function useIsAdmin() {
-  const {user} = useContext(UserInfoContext)
-  return user.username === 'Dara'
+export function useAdmin() {
+  const [adminPassword, setAdminPassword] = useState(cookie.parse(document.cookie).adminPassword)
+
+  const handleSetAdminPassword = useCallback((password: string) => {
+    document.cookie = cookie.serialize('adminPassword', password, {sameSite: 'strict', secure: true, maxAge: 999999})
+    setAdminPassword(password)
+  }, [setAdminPassword])
+
+  return {
+    isAdmin: !!adminPassword,
+    adminPassword,
+    setAdminPassword: handleSetAdminPassword
+  }
 }

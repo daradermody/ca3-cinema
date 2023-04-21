@@ -1,9 +1,9 @@
-import { getUser, isAdmin, withAuth } from '../_otherstff/authentication'
-import { withErrorHandling } from '../_otherstff/errorHandling'
-import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
-import { SuggestedMovie, VoteEvent, VotingResult } from '../../types/data'
-import { ApiError } from 'next/dist/server/api-utils'
-import { getActiveEvent, votesByCurrentEvent } from '../_otherstff/voting'
+import {hasAdminAuth, withAuth} from '../_otherstff/authentication'
+import {withErrorHandling} from '../_otherstff/errorHandling'
+import {NextApiRequest, NextApiResponse} from 'next/dist/shared/lib/utils'
+import {SuggestedMovie, VoteEvent, VotingResult} from '../../types/data'
+import {ApiError} from 'next/dist/server/api-utils'
+import {getActiveEvent, votesByCurrentEvent} from '../_otherstff/voting'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   const voteEvent = await getActiveEvent()
@@ -11,7 +11,7 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
     throw new ApiError(400, 'No vote event underway')
   }
 
-  if (!isAdmin(getUser(request)) && !voteEvent.winner) {
+  if (!hasAdminAuth(request) && !voteEvent.winner) {
     throw new ApiError(403, 'Voting not closed yet')
   }
   response.json(await getResults(voteEvent))

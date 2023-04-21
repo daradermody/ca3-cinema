@@ -1,8 +1,8 @@
-import { fauna } from '../_otherstff/fauna/client'
-import { deleteItem, Movies } from '../_otherstff/fauna/queries'
-import { withAuth } from '../_otherstff/authentication'
-import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
-import { withErrorHandling } from '../_otherstff/errorHandling'
+import {fauna} from '../_otherstff/fauna/client'
+import {deleteItem, Movies} from '../_otherstff/fauna/queries'
+import {withAdminAuth} from '../_otherstff/authentication'
+import {NextApiRequest, NextApiResponse} from 'next/dist/shared/lib/utils'
+import {withErrorHandling} from '../_otherstff/errorHandling'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method === 'DELETE') {
@@ -11,4 +11,4 @@ async function handler(request: NextApiRequest, response: NextApiResponse) {
   }
 }
 
-export default withAuth(withErrorHandling(handler))
+export default withAdminAuth(withErrorHandling(handler))

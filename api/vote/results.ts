@@ -1,8 +1,7 @@
 import {hasAdminAuth, withAuth} from '../_otherstff/authentication'
-import {withErrorHandling} from '../_otherstff/errorHandling'
-import {NextApiRequest, NextApiResponse} from 'next/dist/shared/lib/utils'
+import {ApiError, withErrorHandling} from '../_otherstff/errorHandling'
+import {NextApiRequest, NextApiResponse} from 'next'
 import {SuggestedMovie, VoteEvent, VotingResult} from '../../types/data'
-import {ApiError} from 'next/dist/server/api-utils'
 import {getActiveEvent, votesByCurrentEvent} from '../_otherstff/voting'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {

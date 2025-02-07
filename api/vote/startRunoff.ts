@@ -1,13 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
-import { ApiError } from 'next/dist/server/api-utils'
-import { withAdminAuth } from '../_otherstff/authentication'
-import { withErrorHandling } from '../_otherstff/errorHandling'
-import { getActiveEvent, getSettings, updateSettings } from '../_otherstff/voting'
-import { getResults } from './results'
-import { fauna } from '../_otherstff/fauna/client'
-import { createItem, Movies, ref, VoteEvents } from '../_otherstff/fauna/queries'
-import { VoteEventCreation } from '../../types/data'
-import { Expr } from 'faunadb'
+import {NextApiRequest, NextApiResponse} from 'next'
+import {withAdminAuth} from '../_otherstff/authentication'
+import {ApiError, withErrorHandling} from '../_otherstff/errorHandling'
+import {getActiveEvent, getSettings, updateSettings} from '../_otherstff/voting'
+import {getResults} from './results'
+import {fauna} from '../_otherstff/fauna/client'
+import {createItem, Movies, ref, VoteEvents} from '../_otherstff/fauna/queries'
+import {VoteEventCreation} from '../../types/data'
+import {Expr} from 'faunadb'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method !== 'POST') {

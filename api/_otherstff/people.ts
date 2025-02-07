@@ -16,45 +16,24 @@ export const AUTHORIZED_PEOPLE: Person[] = [
     photo: 'https://cdn.discordapp.com/avatars/226030480808607745/a0a84d6e365d3830b9e7db39c7356875.webp'
   },
   {
-    username: 'Ariel',
-    firstName: 'Ariel',
-    lastName: 'Duke',
-    nickname: 'Dukey',
-    photo: 'http://cdn.onlinewebfonts.com/svg/img_550782.png'
+    username: 'Rhys',
+    firstName: 'Rhys',
+    lastName: '',
+    nickname: 'Customer Support Bear',
+    photo: 'https://cdn.discordapp.com/avatars/147702048878493696/8bc89b1f168ddcc6d6b3c8cc13e02751.webp'
   },
   {
-    username: 'Kian',
-    firstName: 'Kian',
-    lastName: 'Jennings',
-    nickname: 'Mr. Partytime',
-    photo: 'https://cdn.discordapp.com/avatars/203831091897827328/342b0bdd3483ed87f9d175d1bcac121c.webp'
+    username: 'James',
+    firstName: 'James',
+    lastName: '',
+    nickname: "Séamus O'Wales",
+    photo: 'https://cdn.discordapp.com/avatars/192319925765799936/7a6382fdad1be181d3a9c993fc6ce336.webp'
   },
   {
-    username: 'Mike',
-    firstName: 'Mike',
-    lastName: 'Watkins',
-    nickname: 'Cat',
-    photo: 'https://cdn.discordapp.com/avatars/203832153845399552/8a5e8ade7234c3f095a5fd8f81200c60.webp'
-  },
-  {
-    username: 'Jane',
-    firstName: 'Jane',
-    lastName: 'Coleman',
-    nickname: 'Wrangler',
-    photo: 'https://cdn.discordapp.com/avatars/749060246387032106/065d8fd98ad276ec49cb306f81f890ec.webp'
-  },
-  {
-    username: 'Austin',
-    firstName: 'Austin',
-    lastName: 'Foley',
-    nickname: 'Texas',
-    photo: 'http://cdn.onlinewebfonts.com/svg/img_550782.png'
-  },
-  {
-    username: 'Szymon',
-    firstName: 'Szymon',
-    lastName: 'Zielinski',
-    nickname: 'No nickname yet!',
-    photo: 'http://cdn.onlinewebfonts.com/svg/img_550782.png'
+    username: 'Ciara',
+    firstName: '',
+    lastName: '',
+    nickname: 'The pervert with itchy armpits',
+    photo: 'https://cdn.discordapp.com/avatars/168481821254746113/40acd4dc92cd513692664716107599cf.webp'
   },
 ]

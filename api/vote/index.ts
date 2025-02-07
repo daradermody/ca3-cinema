@@ -1,11 +1,10 @@
-import { fauna } from '../_otherstff/fauna/client'
-import { Person, SuggestedMovie, VoteCreation, VoteEvent } from '../../types/data'
+import {fauna} from '../_otherstff/fauna/client'
+import {Person, SuggestedMovie, VoteCreation, VoteEvent} from '../../types/data'
 import {getUser, hasAdminAuth, withAuth} from '../_otherstff/authentication'
-import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
-import { withErrorHandling } from '../_otherstff/errorHandling'
-import { ApiError } from 'next/dist/server/api-utils'
-import { getActiveEvent, getSettings, hasVoted, updateSettings } from '../_otherstff/voting'
-import { activeVotingEvent, createItem, Movies, ref, VoteEvents, Votes } from '../_otherstff/fauna/queries'
+import {NextApiRequest, NextApiResponse} from 'next'
+import {ApiError, withErrorHandling} from '../_otherstff/errorHandling'
+import {getActiveEvent, getSettings, hasVoted, updateSettings} from '../_otherstff/voting'
+import {activeVotingEvent, createItem, Movies, ref, VoteEvents, Votes} from '../_otherstff/fauna/queries'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method === 'GET') {

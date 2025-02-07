@@ -1,5 +1,4 @@
-import { NextApiHandler } from 'next/dist/shared/lib/utils'
-import { ApiError } from 'next/dist/server/api-utils'
+import { NextApiHandler } from 'next'
 
 export function withErrorHandling(handler: NextApiHandler): NextApiHandler {
   return async (req, res) => {
@@ -12,5 +11,14 @@ export function withErrorHandling(handler: NextApiHandler): NextApiHandler {
         throw e
       }
     }
+  }
+}
+
+export class ApiError extends Error {
+  readonly statusCode: number
+
+  constructor(statusCode: number, message: string) {
+    super(message)
+    this.statusCode = statusCode
   }
 }

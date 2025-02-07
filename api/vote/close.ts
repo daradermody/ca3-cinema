@@ -1,12 +1,11 @@
-import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils';
-import { ApiError } from 'next/dist/server/api-utils';
-import { withAdminAuth } from '../_otherstff/authentication';
-import { withErrorHandling } from '../_otherstff/errorHandling';
-import { getActiveEvent } from '../_otherstff/voting';
-import { VoteEventCreation } from '../../types/data';
-import { fauna } from '../_otherstff/fauna/client';
-import { DateTime } from 'luxon';
-import { Movies, ref, updateItem, VoteEvents } from '../_otherstff/fauna/queries';
+import {NextApiRequest, NextApiResponse} from 'next'
+import {withAdminAuth} from '../_otherstff/authentication'
+import {ApiError, withErrorHandling} from '../_otherstff/errorHandling'
+import {getActiveEvent} from '../_otherstff/voting'
+import {VoteEventCreation} from '../../types/data'
+import {fauna} from '../_otherstff/fauna/client'
+import {DateTime} from 'luxon'
+import {Movies, ref, updateItem, VoteEvents} from '../_otherstff/fauna/queries'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method !== 'POST') {

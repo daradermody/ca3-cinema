@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { withAuth } from '../_otherstff/authentication';
 import { withErrorHandling } from '../_otherstff/errorHandling';
 import { getAllEvents } from '../_otherstff/voting';

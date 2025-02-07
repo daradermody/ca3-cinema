@@ -1,7 +1,7 @@
 import axios from 'axios'
 import getToken from '../../_otherstff/getToken'
 import { withAuth } from '../../_otherstff/authentication'
-import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { withErrorHandling } from '../../_otherstff/errorHandling'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {

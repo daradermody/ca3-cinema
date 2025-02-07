@@ -1,13 +1,12 @@
-import { fauna } from '../_otherstff/fauna/client'
+import {fauna} from '../_otherstff/fauna/client'
 import getToken from '../_otherstff/getToken'
 import axios from 'axios'
-import { getUser, withAuth } from '../_otherstff/authentication'
-import { NextApiRequest, NextApiResponse } from 'next/dist/shared/lib/utils'
-import { withErrorHandling } from '../_otherstff/errorHandling'
-import { ApiError } from 'next/dist/server/api-utils'
-import { getMovies } from '../_otherstff/movies'
-import { SuggestedMovieCreation } from '../../types/data'
-import { createItem, Movies } from '../_otherstff/fauna/queries'
+import {getUser, withAuth} from '../_otherstff/authentication'
+import {NextApiRequest, NextApiResponse} from 'next'
+import {ApiError, withErrorHandling} from '../_otherstff/errorHandling'
+import {getMovies} from '../_otherstff/movies'
+import {SuggestedMovieCreation} from '../../types/data'
+import {createItem, Movies} from '../_otherstff/fauna/queries'
 
 async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (request.method === 'GET') {

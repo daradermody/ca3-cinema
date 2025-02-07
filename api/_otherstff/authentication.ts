@@ -1,7 +1,7 @@
 import { Person } from '../../types/data'
 import * as cookie from 'cookie'
 import { AUTHORIZED_PEOPLE } from './people'
-import { NextApiHandler, NextApiRequest } from 'next/dist/shared/lib/utils'
+import { NextApiHandler, NextApiRequest } from 'next'
 import getToken from './getToken'
 
 export function withAuth(handler: NextApiHandler): NextApiHandler {

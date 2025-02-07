@@ -7,6 +7,7 @@ import {
   Delete,
   Documents,
   Exists,
+  Expr,
   ExprArg,
   Filter,
   Get,
@@ -27,9 +28,7 @@ import {
   Update,
   Var
 } from 'faunadb'
-import Expr from 'faunadb/src/types/Expr'
-import {DateTime} from 'luxon'
-import {DurationLike} from 'luxon/src/duration'
+import {DateTime, DurationLike} from 'luxon'
 
 export const Votes = 'Votes'
 export const Movies = 'Movies'

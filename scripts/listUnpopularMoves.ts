@@ -1,5 +1,4 @@
-import * as dotenv from 'dotenv'
-dotenv.config({override: true})
+require('@dotenvx/dotenvx').config({path: '.env.local', override: true})
 
 import {fauna} from '../api/_otherstff/fauna/client'
 import {
@@ -17,7 +16,7 @@ const NUMBER_OF_RECENT_EVENTS = 5
 
 async function main(): Promise<void> {
   if (process.env.VERCEL_ENV !== 'production') {
-    console.warn(`Running against ${process.env.VERCEL_ENV}. To run against production, run 'vercel env pull --environment production' first`)
+    console.warn(`Running against dev environment. To run against production, run 'vercel env pull --environment production' first`)
   }
 
   const movies = await getUnwatchedMovies({weeks: 2 * NUMBER_OF_RECENT_EVENTS})

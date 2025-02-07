@@ -58,15 +58,15 @@ export function MovieCard({movie, onClick, onDelete, checked, votes, disableMore
                   {movie.title}
                 </Typography>
               </Tooltip>
-              {mdDisplay && movie.year && <Typography variant="h6" color="text.secondary">({movie.year})</Typography>}
+              {mdDisplay && movie.year && <Typography variant="h6" sx={{color: 'text.secondary'}}>({movie.year})</Typography>}
             </Box>
-            <Typography variant="subtitle1" color="text.secondary" component="div">
+            <Typography variant="subtitle1" sx={{color: 'text.secondary'}} component="div">
               Suggested by {movie.suggester}
             </Typography>
           </CardContent>
           <Box sx={{display: disableMoreInfo ? 'none' : 'flex', alignItems: 'center', pl: 1, pb: 1}}>
             <CardActions>
-              <Link href={`/info/${movie.id}`} onClick={e => e.stopPropagation()}>
+              <Link href={`/info/${movie.id}`} onClick={e => e.stopPropagation()} asChild>
                 <Button component="a">More info</Button>
               </Link>
             </CardActions>

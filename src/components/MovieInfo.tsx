@@ -5,10 +5,9 @@ import { useAdmin } from './UserInfoContext'
 import DeleteIcon from '@mui/icons-material/Delete'
 import styled from '@emotion/styled'
 import api, { extractMessage } from './api'
-import LoadingButton from '@mui/lab/LoadingButton'
 import { useSnackbar } from 'notistack'
 import { getPoster } from './getPoster'
-import { Box, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 
 export function MovieInfo({movie, onDelete}: { movie: SuggestedMovie; onDelete?: () => void }) {
   const {isAdmin} = useAdmin()
@@ -19,7 +18,7 @@ export function MovieInfo({movie, onDelete}: { movie: SuggestedMovie; onDelete?:
     setDeleting(true)
     try {
       await api.delete(`/movies/${movie.id}`)
-      await onDelete()
+      onDelete()
     } catch (e) {
       enqueueSnackbar(`Something went wrong: ${extractMessage(e)}`, {variant: 'error'})
     }
@@ -31,14 +30,14 @@ export function MovieInfo({movie, onDelete}: { movie: SuggestedMovie; onDelete?:
       <StyledPoster src={getPoster(movie.poster)} alt={`${movie.title} poster`}/>
       <Box sx={{overflowX: 'hidden'}}>
         <Typography variant="h5" mr="30px">{movie.title}</Typography>
-        {movie.year && <Typography variant="subtitle1" color="text.secondary">({movie.year})</Typography>}
+        {movie.year && <Typography variant="subtitle1" sx={{color: 'text.secondary'}}>({movie.year})</Typography>}
         <Box sx={{mt: 1}}>{movie.overview}</Box>
         <UserDescription username={movie.suggester} description={movie.userDescription}/>
         <StyledActions show={isAdmin}>
           {onDelete && (
-            <LoadingButton aria-label="delete" onClick={removeSelectedMovie} color="error" variant="contained" loading={deleting}>
+            <Button aria-label="delete" onClick={removeSelectedMovie} color="error" variant="contained" loading={deleting}>
               <DeleteIcon/>
-            </LoadingButton>
+            </Button>
           )}
         </StyledActions>
       </Box>
@@ -51,7 +50,7 @@ function UserDescription({username, description}: { username: any; description?:
     return (
       <StyledQuote>
         <legend>
-          <Typography variant="subtitle1" color="text.secondary">Suggested by {username}</Typography>
+          <Typography variant="subtitle1" sx={{color: 'text.secondary'}}>Suggested by {username}</Typography>
         </legend>
         <Typography variant="h6" sx={{lineHeight:'1.5rem'}}>
           <i>{description}</i>

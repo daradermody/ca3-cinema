@@ -1,23 +1,22 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { createRoot } from 'react-dom/client'
-import { Route, Switch } from 'wouter'
+import {useEffect, useState} from 'react'
+import {createRoot} from 'react-dom/client'
+import {Route, Switch} from 'wouter'
 import MovieList from './pages/MovieList'
 import Vote from './pages/Vote'
 import Login from './pages/Login'
-import { UserInfoProvider } from './components/UserInfoContext'
-import { Box, createTheme, ThemeProvider, Typography } from '@mui/material'
-import { SnackbarProvider } from 'notistack'
+import {UserInfoProvider} from './components/UserInfoContext'
+import {createTheme, ThemeProvider} from '@mui/material'
+import {SnackbarProvider} from 'notistack'
 import api from './components/api'
 import PageLoading from './components/PageLoading'
-import { Results } from './pages/Results'
+import {Results} from './pages/Results'
 import ThanksForVoting from './pages/ThanksForVoting'
 import Admin from './pages/Admin'
 import JoiningInstructions from './pages/JoiningInstructions'
-import Logo from './components/Logo'
-import { VoteEvent } from '../types/data'
-import PastEvents from './pages/PastEvents';
-import PageWrapper from './components/PageWrapper';
+import {VoteEvent} from '../types/data'
+import PastEvents from './pages/PastEvents'
+import PageWrapper from './components/PageWrapper'
 
 const theme = createTheme({
   palette: {

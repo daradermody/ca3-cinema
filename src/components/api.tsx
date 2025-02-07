@@ -3,6 +3,7 @@ import * as cookie from 'cookie'
 
 const api = axios.create({
   baseURL: '/api',
+  withCredentials: true,
   headers: {
     'Accept': 'application/json',
     'X-Admin-Password':  cookie.parse(document.cookie).adminPassword

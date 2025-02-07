@@ -20,7 +20,7 @@ export const AUTHORIZED_PEOPLE: Person[] = [
     firstName: 'Ariel',
     lastName: 'Duke',
     nickname: 'Dukey',
-    photo: 'https://cdn.discordapp.com/avatars/276912882304811009/04af342bb1597003065a331a74b07a07.webp'
+    photo: 'http://cdn.onlinewebfonts.com/svg/img_550782.png'
   },
   {
     username: 'Kian',
@@ -48,7 +48,7 @@ export const AUTHORIZED_PEOPLE: Person[] = [
     firstName: 'Austin',
     lastName: 'Foley',
     nickname: 'Texas',
-    photo: 'https://cdn.discordapp.com/avatars/132103623092994048/a4d484b7badac09af3c0cf5422a8be42.webp'
+    photo: 'http://cdn.onlinewebfonts.com/svg/img_550782.png'
   },
   {
     username: 'Szymon',

@@ -17,16 +17,19 @@ export default function PageWrapper({hideHeader, children}: { hideHeader?: boole
           <StyledHeader>
             <Box m="10px">
               <Link href="/">
-                <a><Logo/></a>
+                <Logo/>
               </Link>
             </Box>
             <Box display="flex" gap="10px">
-              <Link href="/pastEvents">
+              <Link href="/pastEvents" asChild>
                 <Button color="inherit">Past events</Button>
               </Link>
               <Button>
-                <StyledProfilePhoto draggable="false" src={user.photo} alt="user photo"
-                                    onClick={e => setProfileAnchorEl(e.currentTarget)}/>
+                <StyledProfilePhoto
+                  draggable="false"
+                  src={user.photo}
+                  alt="user photo"
+                  onClick={e => setProfileAnchorEl(e.currentTarget)}/>
               </Button>
               <Menu
                 anchorEl={profileAnchorEl}
@@ -86,4 +89,5 @@ const StyledProfilePhoto = styled.img`
   margin: 15px;
   height: 100%;
   cursor: pointer;
+  aspect-ratio: 1 / 1;
 `

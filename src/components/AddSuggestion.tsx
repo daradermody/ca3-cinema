@@ -59,7 +59,6 @@ export function AddSuggestion({onAdd, addedMovies}: { onAdd: () => void, addedMo
           maxWidth: '100%',
           backgroundColor: 'white',
         }}
-        ListboxProps={{style: {maxHeight: 'calc(100vh - 250px)'}}}
         open={open && !!query && !!options.length && !selectedMovie}
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
@@ -81,16 +80,21 @@ export function AddSuggestion({onAdd, addedMovies}: { onAdd: () => void, addedMo
         renderInput={(params) => (
           <TextField
             {...params}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <React.Fragment>
-                  {loading ? <CircularProgress color="inherit" size={20}/> : null}
-                </React.Fragment>
-              ),
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                endAdornment: (
+                  <React.Fragment>
+                    {loading ? <CircularProgress color="inherit" size={20}/> : null}
+                  </React.Fragment>
+                ),
+              }
             }}
           />
         )}
+        slotProps={{
+          listbox: {style: {maxHeight: 'calc(100vh - 250px)'}}
+        }}
       />
       <Modal open={!!selectedMovie} onClose={reset}>
         <SuggestionSubmissionForm movie={selectedMovie} onComplete={handleSubmission}/>

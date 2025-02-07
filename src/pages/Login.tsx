@@ -45,7 +45,7 @@ function UserCard({user, onClick}: { user: Person, onClick: () => void }) {
           <Typography variant="h5">
             {user.username}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
+          <Typography variant="subtitle1" sx={{color: 'text.secondary'}}>
             {user.nickname}
           </Typography>
         </CardContent>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from 'react'
+import {createContext, ReactNode, useCallback, useEffect, useState} from 'react'
 import {useLocation} from 'wouter'
 import queryString from 'query-string'
 import * as cookie from 'cookie'
@@ -23,7 +23,7 @@ export function UserInfoProvider({children}: { children: ReactNode }) {
 
   const handleSetUser = useCallback((newUser: Person) => {
     if (newUser) {
-      document.cookie = cookie.serialize('user', JSON.stringify(newUser), {sameSite: 'strict', secure: true, maxAge: 999999})
+      document.cookie = cookie.serialize('user', JSON.stringify(newUser), {sameSite: 'strict', secure: true, maxAge: 999999, path: '/'})
       setUser(newUser)
       let returnPath = queryString.parse(window.location.search).andWeWillGetYouTo as string
       returnPath = !returnPath || returnPath === '/login' ? '/' : returnPath
@@ -38,9 +38,9 @@ export function UserInfoProvider({children}: { children: ReactNode }) {
 
   if (!!user || location === '/login') {
     return (
-      <UserInfoContext.Provider value={{user, setUser: handleSetUser}}>
+      <UserInfoContext value={{user, setUser: handleSetUser}}>
         {children}
-      </UserInfoContext.Provider>
+      </UserInfoContext>
     )
   } else {
     return <PageLoading/>

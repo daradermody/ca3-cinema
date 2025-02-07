@@ -21,7 +21,6 @@ import {
 import { SuggestedMovie, Vote, VoteEvent, VotingResult } from '../../types/data'
 import api, { extractMessage } from '../components/api'
 import PageLoading from '../components/PageLoading'
-import { LoadingButton } from '@mui/lab'
 import { useSnackbar } from 'notistack'
 import { DateTime } from 'luxon'
 
@@ -122,7 +121,7 @@ function AdminLogin() {
         onChange={e => setPassword(e.target.value)}
         onKeyDown={e => e.key === 'Enter' && handleClick()}
       />
-      <LoadingButton variant="contained" onClick={handleClick} loading={loading}>Login</LoadingButton>
+      <Button variant="contained" onClick={handleClick} loading={loading}>Login</Button>
     </Box>
   )
 }
@@ -178,7 +177,7 @@ function StartVotingEvent({onSubmit}: { onSubmit: () => void }) {
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={close}>Cancel</Button>
-          <LoadingButton variant="contained" disabled={!eventName} loading={loading} onClick={startVotingEvent}>Start</LoadingButton>
+          <Button variant="contained" disabled={!eventName} loading={loading} onClick={startVotingEvent}>Start</Button>
         </DialogActions>
       </Dialog>
     </>
@@ -232,9 +231,9 @@ function StopVoting({results, isRunoff, onSubmit}: { results: VotingResult[], is
 
   return (
     <>
-      <LoadingButton loading={loading} variant="contained" onClick={handleClick}>
+      <Button loading={loading} variant="contained" onClick={handleClick}>
         {buttonText}
-      </LoadingButton>
+      </Button>
 
       <Dialog open={showWinnerModal} onClose={() => setShowWinnerModal(false)}>
         <DialogTitle>Confirm winner</DialogTitle>
@@ -263,14 +262,14 @@ function StopVoting({results, isRunoff, onSubmit}: { results: VotingResult[], is
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={() => setShowWinnerModal(false)}>Cancel</Button>
-          <LoadingButton
+          <Button
             variant="contained"
             disabled={!DateTime.fromISO(showingTime).isValid || !downloadLink || (winningMovies.length > 1 && !chosenWinner)}
             loading={loading}
             onClick={handleSubmit}
           >
             End voting
-          </LoadingButton>
+          </Button>
         </DialogActions>
       </Dialog>
     </>
@@ -294,8 +293,8 @@ function FinishEvent({onSubmit, cancelled}: { onSubmit: () => void, cancelled?: 
   }
 
   return (
-    <LoadingButton loading={loading} variant="contained" color={cancelled ? 'error' : 'primary'} onClick={finishEvent}>
+    <Button loading={loading} variant="contained" color={cancelled ? 'error' : 'primary'} onClick={finishEvent}>
       {cancelled ? 'Cancel event' : 'Finish event'}
-    </LoadingButton>
+    </Button>
   )
 }

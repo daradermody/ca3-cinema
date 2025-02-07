@@ -3,11 +3,10 @@ import { useCallback, useState } from 'react'
 import PageWrapper from '../components/PageWrapper'
 import { MovieCard } from '../components/MovieCard'
 import styled from '@emotion/styled'
-import { Box, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, Typography, useMediaQuery, useTheme } from '@mui/material';
 import api, { extractMessage } from '../components/api'
 import { SuggestedMovie, VoteEvent } from '../../types/data'
 import { useSnackbar } from 'notistack'
-import { LoadingButton } from '@mui/lab'
 
 interface VoteProps {
   options: VoteEvent['votingOptions']
@@ -39,7 +38,7 @@ function SingleVote({options, onSubmit}: { options: VoteEvent['votingOptions'], 
   }, [setLoading, onSubmit, enqueueSnackbar, selectedMovie])
 
   const button = (
-    <LoadingButton
+    <Button
       loading={loading}
       fullWidth={!mdDisplay}
       sx={{mt: mdDisplay ? 0 : 2}}
@@ -49,7 +48,7 @@ function SingleVote({options, onSubmit}: { options: VoteEvent['votingOptions'], 
       disabled={!selectedMovie}
     >
       Vote
-    </LoadingButton>
+    </Button>
   )
 
   return (
@@ -102,7 +101,7 @@ function MultiVote({options, onSubmit}: { options: VoteEvent['votingOptions'], o
   }, [setLoading, onSubmit, enqueueSnackbar, selectedMovies])
 
   const button = (
-    <LoadingButton
+    <Button
       loading={loading}
       fullWidth={!mdDisplay}
       sx={{mt: mdDisplay ? 0 : 2}}
@@ -112,7 +111,7 @@ function MultiVote({options, onSubmit}: { options: VoteEvent['votingOptions'], o
       disabled={!selectedMovies.length}
     >
       Vote ({selectedMovies.length})
-    </LoadingButton>
+    </Button>
   )
 
   return (

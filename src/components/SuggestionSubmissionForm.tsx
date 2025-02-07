@@ -3,8 +3,7 @@ import * as React from 'react'
 import { useCallback, useState } from 'react'
 import styled from '@emotion/styled'
 import api, { extractMessage } from './api'
-import { TextField } from '@mui/material'
-import { LoadingButton } from '@mui/lab'
+import { Button, TextField } from '@mui/material';
 import { useSnackbar } from 'notistack'
 import { getPoster } from './getPoster'
 
@@ -34,7 +33,7 @@ export function SuggestionSubmissionForm({movie, onComplete}: { movie: Movie; on
         <StyledForm>
           <h3>Let others know why you suggested it</h3>
           <TextField sx={{ width: '100%', border: '1px solid white' }} multiline rows={3} value={reason} onChange={(e) => setReason(e.target.value)}/>
-          <LoadingButton variant="contained" onClick={addMovie} sx={{ marginTop: '10px' }} loading={loading}>Add suggestion</LoadingButton>
+          <Button variant="contained" onClick={addMovie} sx={{ marginTop: '10px' }} loading={loading}>Add suggestion</Button>
         </StyledForm>
       </div>
     </StyledDialog>
